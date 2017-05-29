@@ -7,8 +7,6 @@ ifndef VARIANT
 VARIANT             = release
 endif
 
-#VRM test - touch makefile
-
 BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
 INCLUDE_DIR         = $(BUILD_DIR)/include
