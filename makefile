@@ -7,6 +7,8 @@ ifndef VARIANT
 VARIANT             = release
 endif
 
+#VRM test - touch makefile
+
 BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
 INCLUDE_DIR         = $(BUILD_DIR)/include
@@ -21,5 +23,5 @@ clean:
 	@echo "   cleaning trash files"
 	@rm -f core *~
 	cd $(SRC_DIR) && $(MAKE) clean TOP=$(TOP)
-	@rm -rf $(TOP)/build
+	#@rm -rf $(TOP)/build
 
