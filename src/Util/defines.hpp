@@ -98,6 +98,34 @@ typedef unsigned int uint32_t;
     const double M_INF_INT = std::numeric_limits<int>::min(); ///< minus infinity for int
 	
 	const double D_INT_MAX = UINT32_MAX; ///< The UINT32_MAX constant as a \c double
+
+    /// Types of the variables
+    //  (do not modify this order)
+    enum bb_input_type
+    {
+        CONTINUOUS  ,     ///< Continuous variable (default) (R)
+        INTEGER     ,     ///< Integer variable              (I)
+        CATEGORICAL ,     ///< Categorical variable          (C)
+        BINARY            ///< Binary variable               (B)
+    };
+
+    /// Blackbox outputs type
+    enum bb_output_type
+    {
+        OBJ         ,    ///< Objective value
+        EB          ,    ///< Extreme barrier constraint
+        PB          ,    ///< progressive barrier constraint
+        // PEB           ///< PB constraint that becomes EB once satisfied
+        PEB_P       ,    ///< PEB constraint, state P (PB)
+        PEB_E       ,    ///< PEB constraint, state E (EB)
+        FILTER      ,    ///< Filter constraint
+        CNT_EVAL    ,    ///< Output set to 0 or 1 to specify to count or not the
+        ///<   blackbox evaluation
+        STAT_AVG    ,    ///< Stat (average)
+        STAT_SUM    ,    ///< Stat (sum)
+        UNDEFINED_BBO    ///< Ignored output
+    };
+
 	
 #include "nomad_nsend.hpp"
 

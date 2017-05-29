@@ -1,18 +1,17 @@
 
+#TOP is the base directory for libnomadbase. This is where the src directory is located.
+
 ifndef TOP
 $(error TOP needs to be defined)
 endif
-
-ifndef VARIANT
-VARIANT             = release
+ifndef BUILD_DIR
+$(error BUILD_DIR needs to be defined)
 endif
 
-BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
-INCLUDE_DIR         = $(BUILD_DIR)/include
+INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
 OBJ_DIR             = $(BUILD_DIR)/obj
 LIB_DIR             = $(BUILD_DIR)/lib
-BIN_DIR             = $(BUILD_DIR)/bin
 
 #VRM I don't know how to avoid listing all objects to compile the library.
 OBJ_LIB             = Double.o Exception.o LHS.o Parameters.o Param.o ParamValue.o Point.o RNG.o utils.o Vector.o

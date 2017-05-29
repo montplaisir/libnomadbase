@@ -7,7 +7,7 @@ endif
 
 BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
-INCLUDE_DIR         = $(BUILD_DIR)/include
+INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
 OBJ_DIR             = $(BUILD_DIR)/obj
 BIN_DIR             = $(BUILD_DIR)/bin
 
