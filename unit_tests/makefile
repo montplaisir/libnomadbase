@@ -46,7 +46,8 @@ INCLFLAGS = -I$(INCLUDE_DIR)
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = double_unittest point_unittest vector_unittest lhs_unittest
+TESTS = double_unittest point_unittest vector_unittest lhs_unittest \
+        parameters_unittest param_unittest paramvalue_unittest
 TESTS := $(addprefix $(BIN_TEST_DIR)/,$(TESTS))
 
 # All Google Test headers.  Usually you shouldn't change this
@@ -118,6 +119,24 @@ $(OBJ_TEST_DIR)/lhs_unittest.o : $(UNIT_TESTS_DIR)/lhs_unittest.cpp \
                      $(INCLUDE_DIR)/Math/LHS.hpp $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/lhs_unittest.cpp \
+            -o $@
+
+$(OBJ_TEST_DIR)/parameters_unittest.o : $(UNIT_TESTS_DIR)/parameters_unittest.cpp \
+                     $(INCLUDE_DIR)/Param/Parameters.hpp $(GTEST_HEADERS)
+	mkdir -p $(OBJ_TEST_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/parameters_unittest.cpp \
+            -o $@
+
+$(OBJ_TEST_DIR)/param_unittest.o : $(UNIT_TESTS_DIR)/param_unittest.cpp \
+                     $(INCLUDE_DIR)/Param/Param.hpp $(GTEST_HEADERS)
+	mkdir -p $(OBJ_TEST_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/param_unittest.cpp \
+            -o $@
+
+$(OBJ_TEST_DIR)/paramvalue_unittest.o : $(UNIT_TESTS_DIR)/paramvalue_unittest.cpp \
+                     $(INCLUDE_DIR)/Param/ParamValue.hpp $(GTEST_HEADERS)
+	mkdir -p $(OBJ_TEST_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/paramvalue_unittest.cpp \
             -o $@
 
 
