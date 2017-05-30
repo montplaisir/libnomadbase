@@ -27,6 +27,15 @@ public:
     ParamValue & operator = ( const double & d );
 
 
+    // Comparison operator
+    inline bool operator==(const ParamValue& rhs) const {
+        return _value == rhs._value;
+    }
+    inline bool operator!=(const ParamValue& rhs) const {
+        return !(*this == rhs);
+    }
+    
+
     bool is_valid() const;
 
     // Get/Set
