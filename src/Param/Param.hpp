@@ -39,7 +39,7 @@ public:
     ParamValue get_value() const;
     void set_value(const ParamValue value);
 
-    const bool value_is_const() const { return _value_is_const; }
+    bool value_is_const() const { return _value_is_const; }
 
     // Validate the string as a parameter name
     static bool name_is_valid(const std::string &name);
