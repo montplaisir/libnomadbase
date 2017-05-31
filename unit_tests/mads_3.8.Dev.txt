@@ -38,3 +38,9 @@ use_granular_variables 1
 user_param 2
 
 RUN SEED # OK
+
+#Testing parameter reading
+ #Test     
+        Param1 1
+        Param2 2.2    
+    Param3      33 # hello world!

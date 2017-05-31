@@ -35,6 +35,23 @@
      */
     bool check_read_file ( const std::string & file_name );
 
+    // Get current directory
+    std::string curdir();
+
+    // Extract directory from the given filename.
+    // If there is no directory, return ".".
+    std::string dirname( const std::string &filename );
+
+    // If filename has a path, leave it.
+    // If it doesn't, add dirname() to it.
+    std::string fullpath( const std::string &filename );
+
+    // Input a line (from a parameters file).
+    // Remove comments starting with '#'.
+    // Replace tabs by spaces.
+    // Trim extra spaces.
+    void remove_comments( std::string &line );
+
     
 #include "nomad_nsend.hpp"
 

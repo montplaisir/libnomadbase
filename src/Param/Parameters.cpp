@@ -1,5 +1,6 @@
 
 #include <fstream>
+#include <Util/fileutils.hpp>
 #include <Util/utils.hpp>
 #include "Parameters.hpp"
 
@@ -17,30 +18,36 @@ bool Parameters::add(const Param &p)
 
 void Parameters::read_from_file(const std::string &filename)
 {
-    std::cout << "Reading from file " << filename << std::endl;
-
     if (filename.empty())
     {
         throw NOMAD::Exception(__FILE__, __LINE__, "File name is empty" );
     }
 
-    std::string complete_filename = "./" + filename;
-    std::ifstream fin ( complete_filename.c_str() ); // VRM: Make this better, see for ex. NOMAD_3 Parameters.
-    std::string err = "Could not open parameters file " + complete_filename;
+    std::string full_filename = NOMAD::fullpath(filename);
+    std::ifstream fin;
+    std::string err = "Could not open parameters file " + full_filename;
 
-    //if (NOMAD::check_read_file (filename)) // VRM: copied... merge with NOMAD_3.
-        // TODO: Add check_read_file...
+    if (NOMAD::check_read_file (full_filename))
     {
-        fin.open( complete_filename.c_str() );
-        if (!fin.fail() )
-        {
-            err.clear();
-        }
-        if (!err.empty())
+        fin.open( full_filename.c_str() );
+
+        if (fin.fail())
         {
             fin.close();
             throw NOMAD::Exception(__FILE__, __LINE__, err);
         }
+        else
+        {
+            err.clear();
+        }
+    }
+
+    std::string line;
+    while (fin.good() && !fin.eof())
+    {
+        getline(fin, line);
+        // Remove comments
+        NOMAD::remove_comments(line);
     }
 
     // Close file
