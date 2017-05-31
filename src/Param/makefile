@@ -4,8 +4,11 @@ VARIANT             = release
 ifndef TOP
 $(error TOP needs to be defined)
 endif
+ifndef BUILD_DIR
+$(error BUILD_DIR needs to be defined)
+endif
 
-BUILD_DIR           = $(TOP)/build/$(VARIANT)
+
 SRC_DIR             = $(TOP)/src
 INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
 OBJ_DIR             = $(BUILD_DIR)/obj
