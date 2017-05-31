@@ -21,7 +21,7 @@ void Parameters::read_from_file(const std::string &filename)
 
     if (filename.empty())
     {
-        throw NOMAD::Exception("Parameters.cpp", __LINE__, "File name is empty" );
+        throw NOMAD::Exception(__FILE__, __LINE__, "File name is empty" );
     }
 
     std::string complete_filename = "./" + filename;
@@ -39,7 +39,7 @@ void Parameters::read_from_file(const std::string &filename)
         if (!err.empty())
         {
             fin.close();
-            throw NOMAD::Exception("Parameters.cpp", __LINE__, err);
+            throw NOMAD::Exception(__FILE__, __LINE__, err);
         }
     }
 
@@ -53,6 +53,6 @@ void Parameters::write_to_file(const std::string &filename)
 
     if (filename.empty())
     {
-        throw NOMAD::Exception("Parameters.cpp", __LINE__, "File name is empty" );
+        throw NOMAD::Exception(__FILE__, __LINE__, "File name is empty" );
     }
 }
