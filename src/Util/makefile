@@ -2,6 +2,10 @@
 ifndef TOP
 $(error TOP needs to be defined)
 endif
+ifndef BUILD_DIR
+$(error BUILD_DIR needs to be defined)
+endif
+
 ifndef VARIANT
 VARIANT				= release
 endif
@@ -9,7 +13,6 @@ endif
 
 UNAME := $(shell uname)
 
-BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
 OBJ_DIR             = $(BUILD_DIR)/obj
 INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
@@ -32,9 +35,10 @@ INCLFLAGS			= -I$(INCLUDE_DIR)
 COMPILE             = g++ $(CXXFLAGS)
 
 
-all: $(INCLUDE_DIR)/Util $(OBJ_DIR)/Exception.o $(OBJ_DIR)/utils.o
+all: $(INCLUDE_DIR)/Util $(OBJ_DIR)/Exception.o $(OBJ_DIR)/fileutils.o $(OBJ_DIR)/utils.o
 
-$(INCLUDE_DIR)/Util: Copyright.hpp  defines.hpp  Exception.hpp  Uncopyable.hpp  utils.hpp 
+$(INCLUDE_DIR)/Util: Copyright.hpp defines.hpp Exception.hpp Uncopyable.hpp \
+                     fileutils.hpp utils.hpp 
 	@mkdir -p $@
 	@cp -f $^ $@
 
@@ -44,4 +48,4 @@ $(OBJ_DIR)/%.o: %.cpp %.hpp
 
 clean:
 	@rm -rf $(INCLUDE_DIR)/Util
-	@rm -f $(OBJ_DIR)/Exception.o $(OBJ_DIR)/utils.o
+	@rm -f $(OBJ_DIR)/Exception.o $(OBJ_DIR)/fileutils.o $(OBJ_DIR)/utils.o
