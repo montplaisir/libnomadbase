@@ -25,4 +25,4 @@ do
 done
 
 #reset color.
-tput setaf 0
+tput sgr0
