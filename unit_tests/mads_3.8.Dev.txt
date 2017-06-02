@@ -1,3 +1,4 @@
+#Consider this the default parameters.
 date
 ANY_PROBLEM
 RUNNER 2.11
@@ -44,3 +45,7 @@ RUN SEED # OK
         Param1 1
         Param2 2.2    
     Param3      33 # hello world!
+    
+#Test a value of 0, which could be ambiguous
+ParamTest0 0
+

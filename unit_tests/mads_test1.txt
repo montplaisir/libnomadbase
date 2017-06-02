@@ -1,0 +1,6 @@
+# File that will be read after the default parameters file.
+# Values will be overwritten.
+USER_PARAM 42
+PARAM1 100.100
+PARAM2 2222
+PARAM3 30000000
