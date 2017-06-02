@@ -3,48 +3,60 @@
 
 // Constructors
 ParamValue::ParamValue(const NOMAD::Double value)
-  : _value(value)
+  : m_valuevariant(value)
 {
 }
 
 ParamValue::ParamValue(const bool value)
-  : _value(value)
+  : m_valuevariant(value)
+{
+}
+
+ParamValue::ParamValue(const std::string value)
+  : m_valuevariant(value)
 {
 }
 
 ParamValue::ParamValue(const double value)
 {
     // Need explicit conversion.
-    _value = NOMAD::Double(value);
+    m_valuevariant = NOMAD::Double(value);
+}
+
+ParamValue::ParamValue(const char* value)
+{
+    // Need explicit conversion.
+    m_valuevariant = std::string(value);
 }
 
 // Copy constructor
 ParamValue::ParamValue(const ParamValue &v)
-  : _value(v._value)
+  : m_valuevariant(v.m_valuevariant)
 {
 }
 
 // Affectation operators
 ParamValue & ParamValue::operator = ( const ParamValue & v )
 {
-    _value   = v._value;
+    m_valuevariant = v.m_valuevariant;
 
     return *this;
 }
 
 ParamValue & ParamValue::operator = ( const double & d )
 {
-    _value   = d;
+    m_valuevariant = d;
 
     return *this;
 }
 
-
-// Get/Set
-void ParamValue::set_value(const ValueVariant value)
+ParamValue & ParamValue::operator = ( const char* & s )
 {
-    _value = value;
+    m_valuevariant = std::string(s);
+
+    return *this;
 }
+
 
 // Class used to validate the variant ParamValue - see is_valid() below.
 class Validator : public boost::static_visitor<bool>
@@ -62,13 +74,21 @@ public:
         }
         return true;
     }
+    bool operator()(const std::string &s) const
+    {
+        if (s.empty())
+        {
+            return false;
+        }
+        return true;
+    }
 };
 
 // Validate the parameter value
 bool ParamValue::is_valid() const
 {
     Validator validator;
-    bool is_valid = boost::apply_visitor( validator, _value);
+    bool is_valid = boost::apply_visitor( validator, m_valuevariant);
     return is_valid;
 }
 

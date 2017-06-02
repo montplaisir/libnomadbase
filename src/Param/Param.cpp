@@ -5,11 +5,11 @@ using namespace std;
 
 // Constructors
 
-Param::Param(std::string name, ParamValue value, std::string category, bool value_is_const)
-  : _category(category),
-    _name(name),
-    _value(value),
-    _value_is_const(value_is_const)
+Param::Param(std::string name, ParamValue paramvalue, std::string category, bool value_is_const)
+  : m_category(category),
+    m_name(name),
+    m_paramvalue(paramvalue),
+    m_value_is_const(value_is_const)
 {
     init();
 }
@@ -17,14 +17,14 @@ Param::Param(std::string name, ParamValue value, std::string category, bool valu
 void Param::Param::init()
 {
     // Convert name to capital letters
-    NOMAD::toupper(_name);
+    NOMAD::toupper(m_name);
 
     // Validate
-    if (!name_is_valid(_name))
+    if (!name_is_valid(m_name))
     {
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param name is not valid");
     }
-    if (!_value.is_valid())
+    if (!m_paramvalue.is_valid())
     {
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is not valid");
     }
@@ -32,7 +32,7 @@ void Param::Param::init()
 
 std::string Param::get_name() const
 {
-    return _name;
+    return m_name;
 }
 
 void Param::set_name(const std::string name)
@@ -41,25 +41,25 @@ void Param::set_name(const std::string name)
     {
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param name is not valid");
     }
-    _name = name;
+    m_name = name;
 }
 
-ParamValue Param::get_value() const
+ParamValue Param::get_paramvalue() const
 {
-    return _value;
+    return m_paramvalue;
 }
 
-void Param::set_value(const ParamValue value)
+void Param::set_paramvalue(const ParamValue paramvalue)
 {
-    if (_value_is_const)
+    if (m_value_is_const)
     {
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is const and cannot be modified");
     }
-    if (!_value.is_valid())
+    if (!paramvalue.is_valid())
     {
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is not valid");
     }
-    _value = value;
+    m_paramvalue = paramvalue;
 }
 
 bool is_capletter(const char &c)
@@ -122,6 +122,9 @@ bool Param::name_is_valid(const std::string &name)
 
 bool Param::operator< (const Param &p) const
 {
-    return (_category < p._category);
+    // Parameter name is the key, when adding to Parameters.
+    // If a parameter already exists with this name, it will be 
+    // ignored when adding to Parameters.
+    return (m_name < p.m_name);
 }
 
