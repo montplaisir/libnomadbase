@@ -6,3 +6,5 @@ When reading file, convert to NOMAD::Double or other, when relevant. Right now a
 Output to file.
 
 Connect this with Runner.
+
+Use namespace NOMAD on parameter classes

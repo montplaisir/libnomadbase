@@ -23,7 +23,8 @@ COMPILE             = g++ $(CXXFLAGS) $(INCLFLAGS)
 
 all: $(INCLUDE_DIR)/Param $(OBJ_DIR)/ParamValue.o $(OBJ_DIR)/Param.o $(OBJ_DIR)/Parameters.o
 
-$(INCLUDE_DIR)/Param: ParamValue.hpp Param.hpp Parameters.hpp
+#Note: also copy default_parameters.txt.
+$(INCLUDE_DIR)/Param: ParamValue.hpp Param.hpp Parameters.hpp default_parameters.txt
 	@mkdir -p $@
 	@cp -f $^ $@
 

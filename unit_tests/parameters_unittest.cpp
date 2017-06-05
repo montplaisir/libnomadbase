@@ -22,6 +22,7 @@ TEST(ParametersTest, Basic) {
 
     Parameters all_parameters = Parameters();
 
+/*
     Param p1("first_parameter", 1.1);
     bool param1_added = all_parameters.add(p1);
     EXPECT_EQ(true, param1_added);
@@ -49,6 +50,7 @@ TEST(ParametersTest, Basic) {
     bool param6_added = all_parameters.add(p6);
     EXPECT_EQ(true, param6_added);
 
+*/
     // Testing fileutils::curdir
     string testdir = NOMAD::curdir();
     cout << "VRM: testdir = " << testdir << endl;
@@ -59,6 +61,7 @@ TEST(ParametersTest, Basic) {
         testdir = testdir + NOMAD::DIR_SEP + unittestdir;
         cout << "VRM: testdir is now " << testdir << endl;
     }
+/*
 
     // Testing fileutils::dirname here
     string dir1 = NOMAD::dirname("mads_3.8.Dev.txt");
@@ -71,14 +74,15 @@ TEST(ParametersTest, Basic) {
     EXPECT_EQ("./some_file.txt", full1);
     string full2 = NOMAD::fullpath("/home/toto/path/to/file2.txt");
     EXPECT_EQ("/home/toto/path/to/file2.txt", full2);
+    */
 
     // Testing fileutils::check_read_file
-    string default_filename = "mads_3.8.Dev.txt";
-    string full3 = NOMAD::fullpath(testdir + NOMAD::DIR_SEP + default_filename);
+    string runner_params_filename = "mads_3.8.Dev.txt";
+    string full3 = NOMAD::fullpath(testdir + NOMAD::DIR_SEP + runner_params_filename);
     bool file_is_readable = NOMAD::check_read_file(full3);
     EXPECT_EQ(true, file_is_readable);
 
-    // Read parameters from the default file
+    // Read parameters from the runner parameters file
     cout << "Read file " << full3 << endl;
     all_parameters.read_from_file(full3);
 

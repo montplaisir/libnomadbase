@@ -5,12 +5,17 @@ using namespace std;
 
 // Constructors
 
-Param::Param(std::string name, ParamValue paramvalue, std::string category, bool value_is_const)
-  : m_category(category),
-    m_name(name),
+Param::Param(std::string name,
+             ParamValue paramvalue,
+             std::string type_string,
+             std::string category,
+             bool value_is_const)
+  : m_name(name),
     m_paramvalue(paramvalue),
+    m_category(category),
     m_value_is_const(value_is_const)
 {
+    // VRM a revoir: paramvalue must be converted using type_string.
     init();
 }
 

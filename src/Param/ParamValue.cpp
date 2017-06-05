@@ -76,10 +76,7 @@ public:
     }
     bool operator()(const std::string &s) const
     {
-        if (s.empty())
-        {
-            return false;
-        }
+        // Accept empty strings.
         return true;
     }
 };

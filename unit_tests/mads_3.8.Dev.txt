@@ -1,4 +1,3 @@
-#Consider this the default parameters.
 date
 ANY_PROBLEM
 RUNNER 2.11

@@ -14,18 +14,20 @@
 class Param
 {
 private:
-    std::string     m_category;  // Ex. ALGO, PROBLEM, ... // VRM make an ENUM
     std::string     m_name;      // Will be converted to caps
     ParamValue      m_paramvalue;
+    std::string     m_category;  // ALGO, PROBLEM, RUNNER, USER
     bool            m_value_is_const;
 
     void    init();
 
 public:
     // Constructor
-    Param(std::string name,     // Name of the parameter. Naming has some rules.
-          ParamValue paramvalue,     // Value type defined through ParamValue
-          std::string category = std::string(), // ALGORITHM, PROBLEM parameter, etc.
+    Param(std::string name,                 // Name of the parameter. Naming has some rules.
+          ParamValue paramvalue,            // Value type defined through ParamValue
+          std::string type_string = "std::string",  // See ValueVariant. Could be std::string,
+                                                    // NOMAD::Double, bool, etc.
+          std::string category = "USER",    // ALGORITHM, PROBLEM, RUNNER, USER parameter
           bool value_is_const = true);      // Can we modify this parameter's value?
 
     // Destructor
