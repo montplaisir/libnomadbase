@@ -1,0 +1,69 @@
+"  \n\
+# Default values for Runner parameters.  \n\
+#  \n\
+# Category: ALGO / PROBLEM / RUNNER  \n\
+# Type: int / NOMAD::Double / std::string / bool / etc. See typedef ValueVariant in ParamValue.hpp.  \n\
+# Name: will be converted to caps internally.  \n\
+# Value: If no value provided, default constructor value is used  \n\
+  \n\
+ALGO int            INDEX           -1  \n\
+ALGO std::string    SOLVER_NAME  \n\
+ALGO std::string    SOLVER_VERSION  \n\
+ALGO std::string    DESCRIPTION     COMMENTS HERE (max one line)  \n\
+ALGO bool           IS_RANDOM       false  \n\
+ALGO int            MAX_BB_EVAL     -1  \n\
+ALGO bool           TIMES_N         false  \n\
+ALGO NOMAD::Point   X0                          #if defined, replaces the default Problem::_x0  \n\
+ALGO bool           VNS_SEARCH      false  \n\
+ALGO NOMAD::Double  VNS_TRIGGER  \n\
+ALGO int[2]         LH_SEARCH       -1 -1       #VRM how will I treat that one?  \n\
+ALGO bool           OPP_LH          true  \n\
+ALGO int            OPP_EVAL        1  \n\
+ALGO NOMAD::direction_type  DIR_TYPE    NOMAD::ORTHO_NP1_QUAD  \n\
+ALGO NOMAD::Double      REL_INITIAL_MESH_SIZE  -  \n\
+ALGO NOMAD::Double      ABS_INITIAL_MESH_SIZE  -  \n\
+ALGO NOMAD::Double  D0_REL                      # initial mesh size (relative value)  \n\
+ALGO NOMAD::Double  D0_ABS                      # initial mesh size (absolute value)  \n\
+ALGO bool           ANISOTROPIC_MESH            true  \n\
+ALGO int            INITIAL_MESH_INDEX          0  \n\
+ALGO int            MESH_COARSENING_EXPONENT    1  \n\
+ALGO int            MESH_REFINING_EXPONENT      -1  \n\
+ALGO NOMAD::Double  MESH_UPDATE_BASIS           4.0  \n\
+ALGO NOMAD::Double  POLL_UPDATE_BASIS           2.0  \n\
+ALGO bool           USE_GRANULAR_VARIABLES      true  \n\
+ALGO NOMAD::hnorm_type  H_NORM                  NOMAD::L2  \n\
+ALGO NOMAD::Double  RHO                         0.1  \n\
+ALGO bool           SPECULATIVE_SEARCH          true  \n\
+ALGO bool           SNAP_TO_BOUNDS              true  \n\
+ALGO NOMAD::model_type  MODEL_SEARCH                NOMAD::QUADRATIC_MODEL  # Value = 1  \n\
+ALGO NOMAD::model_type  MODEL_EVAL_SORT             NOMAD::QUADRATIC_MODEL  # Value = 1  \n\
+ALGO bool               MODEL_EVAL_SORT_CAUTIOUS    false  \n\
+ALGO bool               MODEL_PROJ_TO_MESH          true  \n\
+ALGO bool               MODEL_SEARCH_OPTIMISTIC     true  \n\
+ALGO int                MODEL_MAX_TRIAL_PTS         4  \n\
+ALGO int                MODEL_MAX_Y_SIZE            500  \n\
+ALGO int                MODEL_MIN_Y_SIZE            -1  \n\
+ALGO bool               MODEL_USE_WP                false  \n\
+ALGO NOMAD::Double      MODEL_RADIUS_FACTOR         2.0  \n\
+ALGO bool           HAS_SGTE                    false  \n\
+ALGO int            USER_PARAM                  0  \n\
+  \n\
+#VRM more problem parameters to add. This is a quick start for ARWHEAD to run.  \n\
+PROBLEM int     DIMENSION       -1  \n\
+PROBLEM int     DISPLAY_DEGREE  NOMAD::NORMAL_DISPLAY  \n\
+PROBLEM std::list<std::string>  DISPLAY_STATS       #VRM un autre pas evident  \n\
+PROBLEM std::string     TMP_DIR  \n\
+PROBLEM std::string     X0                          # VRM this one can be either a file name  \n\
+                                                    # (std::string) or a point (NOMAD::Point)  \n\
+PROBLEM std::string     BB_EXE  \n\
+PROBLEM std::vector<NOMAD::bb_output_type>      BB_OUTPUT_TYPE  \n\
+PROBLEM int             MAX_BB_EVAL     -1  \n\
+  \n\
+# Runner parameters  \n\
+RUNNER std::string  DATE            # For info  \n\
+RUNNER std::string  ANY_PROBLEM     #VRM not sure what this is for  \n\
+RUNNER std::string  RUNNER          2.11   # ill-named param... or category  \n\
+RUNNER std::string  NOMAD           3.8.Dev             # NOMAD version. Should be generalized for other solvers. CF SOLVER_VERSION.  \n\
+RUNNER std::string  VERSION         3.8.Dev, Mads default  \n\
+RUNNER std::string  RUN             SEED OK       # VRM to define.  \n\
+"
