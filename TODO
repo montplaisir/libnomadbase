@@ -1,9 +1,6 @@
-Should I remove the <bool> type from the variant to avoid confusion?
-type would be only NOMAD::Double or std::string.
-
-When reading file, convert to NOMAD::Double or other, when relevant. Right now all are strings.
-
-Output to file.
+Simplify interface. ParamValue is for internal use. 
+Consider not using variants, because it seems more confusing than useful.
+Instead, ParamValue could hold two strings: type and value.
 
 Connect this with Runner.
 
