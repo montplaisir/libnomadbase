@@ -25,8 +25,14 @@ public:
     // True if p was correctly added.
     bool add(const Param &p);
 
+    // Update parameter value with new value.
+    bool update(Param &p, const std::string value_string);
+
     // Get param by name
     bool find(const std::string name, Param &foundparam) const;
+
+    // Get param value by name. Return value as string.
+    std::string get_value_str(const std::string name) const;
 
     // Helpers for reader
     static bool is_parameter_category(const std::string s);

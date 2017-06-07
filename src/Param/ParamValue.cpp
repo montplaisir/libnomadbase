@@ -29,6 +29,52 @@ ParamValue::ParamValue(const char* value)
     m_valuevariant = std::string(value);
 }
 
+ParamValue::ParamValue(const std::string type_string, const std::string value_string)
+{
+    //std::cout << "VRM: create ParamValue with type = " << type_string << ", value = " << value_string << std::endl;
+    update_valuevariant(type_string, value_string);
+}
+
+void ParamValue::update_valuevariant(const std::string type_string, const std::string value_string)
+{
+    std::string err = "Error: " + type_string + " value ill-defined: \"" + value_string + "\"";
+
+    if ("std::string" == type_string)
+    {
+        //std::cout << "VRM: update string to " << value_string << std::endl;
+        m_valuevariant = value_string;
+    }
+    else if ("NOMAD::Double" == type_string)
+    {
+        NOMAD::Double value;
+        if (!value_string.empty() && !value.atof(value_string))
+        {
+            throw NOMAD::Exception(__FILE__,__LINE__,err);
+        }
+        m_valuevariant = value;
+    }
+    else if ("bool" == type_string)
+    {
+        bool value;
+        std::string bool_string = value_string;
+        NOMAD::toupper(bool_string);
+        if ("TRUE" == bool_string || "1" == bool_string || "YES" == bool_string)
+        {
+            value = true;
+        }
+        else if ("FALSE" == bool_string || "0" == bool_string || "NO" == bool_string)
+        {
+            value = false;
+        }
+        else
+        {
+            throw NOMAD::Exception(__FILE__,__LINE__,err);
+        }
+        m_valuevariant = value;
+    }
+
+}
+
 // Copy constructor
 ParamValue::ParamValue(const ParamValue &v)
   : m_valuevariant(v.m_valuevariant)
@@ -57,7 +103,6 @@ ParamValue & ParamValue::operator = ( const char* & s )
     return *this;
 }
 
-
 // Class used to validate the variant ParamValue - see is_valid() below.
 class Validator : public boost::static_visitor<bool>
 {
@@ -68,10 +113,11 @@ public:
     }
     bool operator()(const NOMAD::Double &d) const
     {
-        if (!d.is_defined())
+        // Accept undefined NOMAD::Double
+        /* if (!d.is_defined())
         {
             return false;
-        }
+        }*/
         return true;
     }
     bool operator()(const std::string &s) const
@@ -88,4 +134,33 @@ bool ParamValue::is_valid() const
     bool is_valid = boost::apply_visitor( validator, m_valuevariant);
     return is_valid;
 }
+
+// Class used to convert the variant to string.
+class ConverterToString : public boost::static_visitor<std::string>
+{
+public:
+    std::string operator()(const bool &v) const
+    {
+        return std::string("bool");
+    }
+    std::string operator()(const NOMAD::Double &v) const
+    {
+        return std::string("NOMAD::Double");
+    }
+    std::string operator()(const std::string &v) const
+    {
+        return std::string("std::string");
+    }
+};
+
+// Convert the parameter type to a string describing the type.
+std::string ParamValue::type_string() const
+{
+    ConverterToString converter;
+    std::string ret_str = boost::apply_visitor( converter, m_valuevariant);
+    return ret_str;
+}
+
+
+
 

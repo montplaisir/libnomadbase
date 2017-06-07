@@ -5,9 +5,24 @@ using namespace std;
 
 // Constructors
 
+// Constructor from string values
+Param::Param(std::string name,
+             std::string value_string,
+             std::string type_string,
+             std::string category,
+             bool value_is_const)
+  : m_name(name),
+    m_paramvalue(type_string, value_string),
+    m_category(category),
+    m_value_is_const(value_is_const)
+{
+    init();
+}
+    
+
+// General constructor
 Param::Param(std::string name,
              ParamValue paramvalue,
-             std::string type_string,
              std::string category,
              bool value_is_const)
   : m_name(name),
@@ -15,7 +30,6 @@ Param::Param(std::string name,
     m_category(category),
     m_value_is_const(value_is_const)
 {
-    // VRM a revoir: paramvalue must be converted using type_string.
     init();
 }
 
@@ -27,10 +41,12 @@ void Param::Param::init()
     // Validate
     if (!name_is_valid(m_name))
     {
-        throw NOMAD::Exception("Param.cpp", __LINE__, "Param name is not valid");
+        std::string err = "Param name \"" + m_name + "\" is not valid";
+        throw NOMAD::Exception("Param.cpp", __LINE__, err);
     }
     if (!m_paramvalue.is_valid())
     {
+        //std::string err = "Param value is not valid";
         throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is not valid");
     }
 }
@@ -53,6 +69,50 @@ ParamValue Param::get_paramvalue() const
 {
     return m_paramvalue;
 }
+
+std::string Param::get_value_str() const
+{
+    std::string ret_str = "";
+
+    if (this->get_type() == "std::string")
+    {
+        ret_str = this->get_value<std::string>();
+    }
+    else if (this->get_type() == "bool")
+    {
+        bool value = this->get_value<bool>();
+        ret_str = (value) ? "true" : "false";
+    }
+    else if (this->get_type() == "NOMAD::Double")
+    {
+        NOMAD::Double d = this->get_value<NOMAD::Double>();
+        ret_str = d.tostring();
+    }
+    else
+    {
+        std::string err = "Unknown parameter type: " + this->get_type();
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+
+    return ret_str;
+}
+
+void Param::set_value_str(const std::string value_string)
+{
+    try
+    {
+        m_paramvalue.update_valuevariant(this->get_type(), value_string);
+        std::cout << "VRM: set_value_str, m_paramvalue is now: " << get_value_str() << std::endl;
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value_string << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
 
 void Param::set_paramvalue(const ParamValue paramvalue)
 {

@@ -51,6 +51,39 @@ bool Parameters::add(const Param &p)
     return inserted;
 }
 
+bool Parameters::update(Param &p, const std::string value_string)
+{
+    // A parameter with this name, type, and category already exists.
+    // Update its value.
+    //
+    if (!p.value_is_const())
+    {
+        std::cout << "VRM: update " << p.get_name() << " to (" << p.get_type() << ") " << value_string << std::endl;
+        p.set_value_str(value_string);
+        std::cout << "VRM: update " << p.get_name() << ", value is now " << p.get_value_str() << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cerr << "Could not update this parameter value because it is const: " << p.get_name() << std::endl;
+    }
+
+    return false;
+}
+
+std::string Parameters::get_value_str(const std::string name) const
+{
+    std::string ret_str;
+    const Param t_param(name, ParamValue(true));
+    std::set<Param>::const_iterator it = m_params.find(t_param);
+    const bool found = (it != m_params.end());
+    if (found)
+    {
+        ret_str = (*it).get_value_str();
+    }
+    return ret_str;
+}
+
 bool Parameters::find(const std::string name, Param &foundparam) const
 {
     const Param t_param(name, ParamValue(true));
@@ -128,8 +161,8 @@ bool Parameters::parse_param_2fields(const std::string line,
         return false;
 
     // Contrary to parse_param_4fields(), here value_string is mandatory.
-    name = line.substr(0, split_index);
-    value_string = line.substr(split_index, line.size());
+    name = line.substr(0, split_index-0);
+    value_string = line.substr(split_index+1, line.size()-split_index);
 
     return true;
 }
@@ -154,24 +187,14 @@ void Parameters::parse_line(std::string line)
         std::string value_string;   // String representing the value, ex. "2.345".
         if (is_parameter_category(first_field) && !is_runner_param(line))
         {
-            //std::cout << "VRM Syntax 1 for line: " << line << std::endl;
             // First field of the line identified as param category
             if (!parse_param_4fields(line, category, type_string, name, value_string))
             {
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
             bool value_is_const = ("PROBLEM" == category);
-            /*
-            std::cout << "VRM name: \"" << name << "\"" << std::endl;
-            std::cout << "VRM value_string: \"" << value_string << "\"" << std::endl;
-            std::cout << "VRM type_string: \"" << type_string << "\"" << std::endl;
-            std::cout << "VRM category: \"" << category << "\"" << std::endl;
-            std::cout << "VRM value_is_const: \"" << value_is_const << "\"" << std::endl;
-            */
             Param param(name, value_string, type_string, category, value_is_const);
 
-            // VRM value will all be strings for now, to review.
-            // TODO convert to NOMAD::Double, etc.
             if (!this->add(param))
             {
                 std::cerr << "Could not add parameter " << param.get_name() << std::endl;
@@ -180,7 +203,6 @@ void Parameters::parse_line(std::string line)
         }
         else
         {
-            //std::cout << "VRM Syntax 2 for line: " << line << std::endl;
             // First field of the line not identified as param category.
             // Assume it is a parameter name.
             if (!parse_param_2fields(line, name, value_string))
@@ -191,13 +213,17 @@ void Parameters::parse_line(std::string line)
             Param param(name, value_string);
             if (this->find(name, param))
             {
-                this->add(param);   // VRM a revoir: add a param that already exists!! an update() function should be made instead.
+                this->update(param, value_string);
             }
             else
             {
-                std::cout << "Parameter " << name << " not initialized with a default value. ";
-                std::cout << "Adding it as a USER category parameter. " << std::endl;
-                Param user_param(name, value_string, "std::string", "USER", false);
+                std::string def_category = "USER";
+                std::string def_type = "std::string";
+                std::cout << "Parameter " << name << " does not have a default value. ";
+                std::cout << "Adding it with category = " << def_category << ", ";
+                std::cout << "type = " << def_type << ", ";
+                std::cout << "value = \"" << value_string << "\"" << std::endl;
+                Param user_param(name, value_string, def_type, def_category, false);
                 this->add(user_param);
             }
         }
@@ -221,7 +247,7 @@ void Parameters::read_from_file(const std::string &filename)
     // Check file existence
     if (!NOMAD::check_read_file (full_filename))
     {
-        // The file does not exist
+        // The file does not exist, or is not readable
         throw NOMAD::Exception(__FILE__, __LINE__, err);
     }
 
@@ -259,21 +285,46 @@ void Parameters::write_to_file(const std::string &filename) const
     {
         throw NOMAD::Exception(__FILE__, __LINE__, "File name is empty" );
     }
+    std::string full_filename = NOMAD::fullpath(filename);
+    std::cout << "VRM: full_filename " << full_filename << std::endl;
+    std::string err = "Could not open parameters file " + full_filename + " for writing";
 
-    debug_display();
-    /*
+    // Warn user: if file exists, it will be overwritten.
+    // TODO: cases where file exists but is not writable.
+    if (NOMAD::check_write_file (full_filename))
+    {
+        std::cerr << "Warning: file " << full_filename << " will be overwritten." << std::endl;
+    }
+
+    // Open file for writing
+    std::ofstream fout (full_filename.c_str(), std::ios::out );
+    if (fout.fail())
+    {
+        fout.close();
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
     for (std::set<Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
-        std::cout << it->get_name() << "\t" << it->get_paramvalue() << std::endl;
+        fout << it->get_category() << " ";
+        fout << it->get_type() << " ";
+        fout << it->get_name() << " ";
+        fout << it->get_value_str();
+        fout << std::endl;
     }
-    */
 
+    fout.close();
 }
 
 void Parameters::debug_display() const
 {
     for (std::set<Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
-        std::cout << it->get_name() << "\t" << it->get_paramvalue() << std::endl;
+        std::cout << it->get_category() << " ";
+        std::cout << it->get_type() << " ";
+        std::cout << it->get_name() << " ";
+        std::cout << it->get_value_str();
+        std::cout << std::endl;
+
     }
 }

@@ -22,6 +22,9 @@ public:
     ParamValue(const double value);
     ParamValue(const char* value);
 
+    // Constructor from string values.
+    ParamValue(const std::string type_string, const std::string value_string);
+
     // Copy constructor
     ParamValue(const ParamValue &v);
 
@@ -38,8 +41,6 @@ public:
     inline bool operator!=(const ParamValue& rhs) const {
         return !(*this == rhs);
     }
-    //bool operator< (const ParamValue &paramvalue) const;
-    
 
     bool is_valid() const;
 
@@ -50,13 +51,20 @@ public:
         return boost::get<T>(m_valuevariant);
     }
     ValueVariant get_valuevariant() const { return m_valuevariant; }
-    void set_value(const ValueVariant value) { m_valuevariant = value; }
+    void set_valuevariant(const ValueVariant value) { m_valuevariant = value; }
+    // Update valuevariant, assuming the input string is for a value of the same type
+    // as the current valuevariant.
+    void update_valuevariant(const std::string type_string, const std::string value_string);
 
     friend std::ostream& operator<<(std::ostream& stream, const ParamValue& v)
     {
         stream << v.get_valuevariant();
         return stream;
     }
+
+    // Return a string for the type in ValueVariant.
+    // Ex. "NOMAD::Double", "bool", "std::string", etc.
+    std::string type_string() const;
 
 };
 

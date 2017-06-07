@@ -20,9 +20,9 @@ TEST(ParametersTest, Basic) {
     // This test is named "Basic", and belongs to the "ParametersTest"
     // test case.
 
+cout << "VRM: start parameters unit test" << endl;
     Parameters all_parameters = Parameters();
 
-/*
     Param p1("first_parameter", 1.1);
     bool param1_added = all_parameters.add(p1);
     EXPECT_EQ(true, param1_added);
@@ -50,7 +50,6 @@ TEST(ParametersTest, Basic) {
     bool param6_added = all_parameters.add(p6);
     EXPECT_EQ(true, param6_added);
 
-*/
     // Testing fileutils::curdir
     string testdir = NOMAD::curdir();
     cout << "VRM: testdir = " << testdir << endl;
@@ -61,7 +60,6 @@ TEST(ParametersTest, Basic) {
         testdir = testdir + NOMAD::DIR_SEP + unittestdir;
         cout << "VRM: testdir is now " << testdir << endl;
     }
-/*
 
     // Testing fileutils::dirname here
     string dir1 = NOMAD::dirname("mads_3.8.Dev.txt");
@@ -74,7 +72,6 @@ TEST(ParametersTest, Basic) {
     EXPECT_EQ("./some_file.txt", full1);
     string full2 = NOMAD::fullpath("/home/toto/path/to/file2.txt");
     EXPECT_EQ("/home/toto/path/to/file2.txt", full2);
-    */
 
     // Testing fileutils::check_read_file
     string runner_params_filename = "mads_3.8.Dev.txt";
@@ -86,29 +83,32 @@ TEST(ParametersTest, Basic) {
     cout << "Read file " << full3 << endl;
     all_parameters.read_from_file(full3);
 
+    // Verify value of PARAM1. Should be "1".
+    std::string param_name = "PARAM1";
+    Param tp1(param_name, std::string());
+    bool param1_found = all_parameters.find(param_name, tp1);
+    EXPECT_EQ(true, param1_found);
+    //std::string tp1_s = tp1.get_value<std::string>();
+    std::string tp1_s = tp1.get_value_str();
+    EXPECT_EQ("1", tp1_s);
+
+    // Read parameters from the new file, they will be updated.
     string new_params_file = "mads_test1.txt";
     string full_new = NOMAD::fullpath(testdir + NOMAD::DIR_SEP + new_params_file);
     file_is_readable = NOMAD::check_read_file(full_new);
     EXPECT_EQ(true, file_is_readable);
-
-    std::string param_name = "PARAM1";
-    Param tp1(param_name, bool(0));
-    bool param1_found = all_parameters.find(param_name, tp1);
-    EXPECT_EQ(true, param1_found);
-    // VRM: To think about: Value is 1. How should it be converted when read from the file?
-    // Right now, it seems to always be a string.
-    std::string tp1_s = tp1.get_value<std::string>();
-    EXPECT_EQ(std::string("1"), tp1.get_value<std::string>());
-
-    // Read parameters from the new file, they will be updated.
     cout << "Read file " << full_new << endl;
     all_parameters.read_from_file(full_new);
 
-    // Value of PARAM1 should now be 100.100
-    param1_found = all_parameters.find(param_name, tp1);
-    EXPECT_EQ(true, param1_found);
-    tp1_s = tp1.get_value<std::string>();
-    EXPECT_EQ(std::string("100.100"), tp1.get_value<std::string>());
+    // Value of PARAM1 should now be "100.100".
+    //Param tp2(param_name, std::string());
+    //param1_found = all_parameters.find(param_name, tp2);
+    //EXPECT_EQ(true, param1_found);
+    //tp1_s = tp1.get_value<std::string>();
+    //std::string tp1_s = tp1.get_value_str();
+    //std::string tp2_s = tp2.get_value_str();
+    std::string tp2_s = all_parameters.get_value_str(param_name);
+    EXPECT_EQ("100.100", tp2_s);        // VRM OUIN! CA MARCHE PAS
 
     // Output parameters to a file
     std::cout << std::endl << std::endl;
