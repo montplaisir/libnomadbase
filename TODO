@@ -2,8 +2,20 @@ Simplify interface. ParamValue is for internal use.
 Consider not using variants, because it seems more confusing than useful.
 Instead, ParamValue could hold two strings: type and value.
 
+Hide usage of ParamValue to the library user. For example in class Param, there should
+not be ParamValue as arguments. Even more so with variants (if we keep them).
+
 Connect this with Runner.
 
 Use namespace NOMAD on parameter classes
+Make all internal members start with m_* instead of _*
 
 Compile on Windows. Asses usage of boost.
+
+Some complex types to think about: 
+X0 can be either a NOMAD::Point or a filename
+std::list<std::string> DISPLAY_STATS
+int[2] LH_SEARCH
+etc. This is another reason to use strings instead of variants in ParamValue.
+
+
