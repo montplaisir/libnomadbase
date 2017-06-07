@@ -137,6 +137,12 @@
          */
         const double & todouble ( void ) const;
         
+        /// Return the value as a string.
+        /**
+         \return The \c double as a string.
+         */
+        const std::string tostring ( void ) const;
+        
         /// Is the value defined ?
         /**
          \return A boolean equal to \c true if the NOMAD::Double is defined.
