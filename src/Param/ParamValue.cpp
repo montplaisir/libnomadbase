@@ -2,40 +2,40 @@
 #include "ParamValue.hpp"
 
 // Constructors
-ParamValue::ParamValue(const NOMAD::Double value)
+NOMAD::ParamValue::ParamValue(const NOMAD::Double value)
   : m_valuevariant(value)
 {
 }
 
-ParamValue::ParamValue(const bool value)
+NOMAD::ParamValue::ParamValue(const bool value)
   : m_valuevariant(value)
 {
 }
 
-ParamValue::ParamValue(const std::string value)
+NOMAD::ParamValue::ParamValue(const std::string value)
   : m_valuevariant(value)
 {
 }
 
-ParamValue::ParamValue(const double value)
+NOMAD::ParamValue::ParamValue(const double value)
 {
     // Need explicit conversion.
     m_valuevariant = NOMAD::Double(value);
 }
 
-ParamValue::ParamValue(const char* value)
+NOMAD::ParamValue::ParamValue(const char* value)
 {
     // Need explicit conversion.
     m_valuevariant = std::string(value);
 }
 
-ParamValue::ParamValue(const std::string type_string, const std::string value_string)
+NOMAD::ParamValue::ParamValue(const std::string type_string, const std::string value_string)
 {
     //std::cout << "VRM: create ParamValue with type = " << type_string << ", value = " << value_string << std::endl;
     update_valuevariant(type_string, value_string);
 }
 
-void ParamValue::update_valuevariant(const std::string type_string, const std::string value_string)
+void NOMAD::ParamValue::update_valuevariant(const std::string type_string, const std::string value_string)
 {
     std::string err = "Error: " + type_string + " value ill-defined: \"" + value_string + "\"";
 
@@ -76,27 +76,27 @@ void ParamValue::update_valuevariant(const std::string type_string, const std::s
 }
 
 // Copy constructor
-ParamValue::ParamValue(const ParamValue &v)
+NOMAD::ParamValue::ParamValue(const NOMAD::ParamValue &v)
   : m_valuevariant(v.m_valuevariant)
 {
 }
 
 // Affectation operators
-ParamValue & ParamValue::operator = ( const ParamValue & v )
+NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const NOMAD::ParamValue & v )
 {
     m_valuevariant = v.m_valuevariant;
 
     return *this;
 }
 
-ParamValue & ParamValue::operator = ( const double & d )
+NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const double & d )
 {
     m_valuevariant = d;
 
     return *this;
 }
 
-ParamValue & ParamValue::operator = ( const char* & s )
+NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const char* & s )
 {
     m_valuevariant = std::string(s);
 
@@ -128,7 +128,7 @@ public:
 };
 
 // Validate the parameter value
-bool ParamValue::is_valid() const
+bool NOMAD::ParamValue::is_valid() const
 {
     Validator validator;
     bool is_valid = boost::apply_visitor( validator, m_valuevariant);
@@ -154,7 +154,7 @@ public:
 };
 
 // Convert the parameter type to a string describing the type.
-std::string ParamValue::type_string() const
+std::string NOMAD::ParamValue::type_string() const
 {
     ConverterToString converter;
     std::string ret_str = boost::apply_visitor( converter, m_valuevariant);

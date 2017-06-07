@@ -7,9 +7,9 @@
 
 // Initialize parameter categories static member.
 std::string categories[] = {"ALGO", "PROBLEM", "RUNNER", "USER"};
-const std::vector<std::string> Parameters::m_param_categories(categories, categories + sizeof(categories) / sizeof (std::string));
+const std::vector<std::string> NOMAD::Parameters::m_param_categories(categories, categories + sizeof(categories) / sizeof (std::string));
 
-Parameters::Parameters()
+NOMAD::Parameters::Parameters()
   : m_params()
 {
     // Initialize parameters to default values
@@ -33,17 +33,17 @@ Parameters::Parameters()
 // to the input parameter's value.
 // VRM TODO: If the parameter already exists, check category and type.
 // If they mismatch with the input, return false. (to be detailed)
-bool Parameters::add(const Param &p)
+bool NOMAD::Parameters::add(const NOMAD::Param &p)
 {
-    ParamValue pv = p.get_paramvalue();
-    std::pair<std::set<Param>::iterator,bool> ret;
+    NOMAD::ParamValue pv = p.get_paramvalue();
+    std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
     ret = m_params.insert(p);
     bool inserted = ret.second;
     if (!inserted)
     {
         // We will change the value of the parameter by erasing it,
         // and adding the new one.
-        std::set<Param>::iterator it_oldparam = ret.first;
+        std::set<NOMAD::Param>::iterator it_oldparam = ret.first;
         m_params.erase(it_oldparam);
         ret = m_params.insert(p);
         inserted = ret.second;
@@ -51,7 +51,7 @@ bool Parameters::add(const Param &p)
     return inserted;
 }
 
-bool Parameters::update(Param &p, const std::string value_string)
+bool NOMAD::Parameters::update(NOMAD::Param &p, const std::string value_string)
 {
     // A parameter with this name, type, and category already exists.
     // Update its value.
@@ -71,11 +71,11 @@ bool Parameters::update(Param &p, const std::string value_string)
     return false;
 }
 
-std::string Parameters::get_value_str(const std::string name) const
+std::string NOMAD::Parameters::get_value_str(const std::string name) const
 {
     std::string ret_str;
-    const Param t_param(name, ParamValue(true));
-    std::set<Param>::const_iterator it = m_params.find(t_param);
+    const NOMAD::Param t_param(name, NOMAD::ParamValue(true));
+    std::set<NOMAD::Param>::const_iterator it = m_params.find(t_param);
     const bool found = (it != m_params.end());
     if (found)
     {
@@ -84,10 +84,10 @@ std::string Parameters::get_value_str(const std::string name) const
     return ret_str;
 }
 
-bool Parameters::find(const std::string name, Param &foundparam) const
+bool NOMAD::Parameters::find(const std::string name, NOMAD::Param &foundparam) const
 {
-    const Param t_param(name, ParamValue(true));
-    std::set<Param>::const_iterator it = m_params.find(t_param);
+    const NOMAD::Param t_param(name, NOMAD::ParamValue(true));
+    std::set<NOMAD::Param>::const_iterator it = m_params.find(t_param);
     const bool found = (it != m_params.end());
     if (found)
     {
@@ -96,7 +96,20 @@ bool Parameters::find(const std::string name, Param &foundparam) const
     return found;
 }
 
-bool Parameters::is_parameter_category(const std::string s)
+bool NOMAD::Parameters::is_defined(const std::string name) const
+{
+    std::set<NOMAD::Param>::const_iterator it;
+    for (it = m_params.begin(); it != m_params.end(); it++)
+    {
+        if (name == it->get_name())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool NOMAD::Parameters::is_parameter_category(const std::string s)
 {
     std::vector<std::string>::const_iterator it;
     it = std::find(m_param_categories.begin(), m_param_categories.end(), s);
@@ -108,7 +121,7 @@ bool Parameters::is_parameter_category(const std::string s)
     return false;
 }
 
-bool Parameters::is_runner_param(const std::string line)
+bool NOMAD::Parameters::is_runner_param(const std::string line)
 {
     // Special case for a parameter that is named RUNNER...
     // Not very strong.
@@ -123,7 +136,7 @@ bool Parameters::is_runner_param(const std::string line)
     return true;
 }
 
-bool Parameters::parse_param_4fields(const std::string line,
+bool NOMAD::Parameters::parse_param_4fields(const std::string line,
             std::string &category, std::string &type_string,
             std::string &name, std::string &value_string)
 {
@@ -153,7 +166,7 @@ bool Parameters::parse_param_4fields(const std::string line,
     return true;
 }
 
-bool Parameters::parse_param_2fields(const std::string line,
+bool NOMAD::Parameters::parse_param_2fields(const std::string line,
             std::string &name, std::string &value_string)
 {
     size_t split_index = line.find(' ');
@@ -167,7 +180,7 @@ bool Parameters::parse_param_2fields(const std::string line,
     return true;
 }
 
-void Parameters::parse_line(std::string line)
+void NOMAD::Parameters::parse_line(std::string line)
 {
     // Remove comments
     NOMAD::remove_comments(line);
@@ -193,7 +206,7 @@ void Parameters::parse_line(std::string line)
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
             bool value_is_const = ("PROBLEM" == category);
-            Param param(name, value_string, type_string, category, value_is_const);
+            NOMAD::Param param(name, value_string, type_string, category, value_is_const);
 
             if (!this->add(param))
             {
@@ -210,7 +223,7 @@ void Parameters::parse_line(std::string line)
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
             // This parameter should already exist. Update it.
-            Param param(name, value_string);
+            NOMAD::Param param(name, value_string);
             if (this->find(name, param))
             {
                 this->update(param, value_string);
@@ -223,7 +236,7 @@ void Parameters::parse_line(std::string line)
                 std::cout << "Adding it with category = " << def_category << ", ";
                 std::cout << "type = " << def_type << ", ";
                 std::cout << "value = \"" << value_string << "\"" << std::endl;
-                Param user_param(name, value_string, def_type, def_category, false);
+                NOMAD::Param user_param(name, value_string, def_type, def_category, false);
                 this->add(user_param);
             }
         }
@@ -231,7 +244,7 @@ void Parameters::parse_line(std::string line)
     }
 }
 
-void Parameters::read_from_file(const std::string &filename)
+void NOMAD::Parameters::read_from_file(const std::string &filename)
 {
     std::cout << "VRM: read_from_file " << filename << std::endl;
     if (filename.empty())
@@ -275,7 +288,7 @@ void Parameters::read_from_file(const std::string &filename)
 
 }
 
-void Parameters::write_to_file(const std::string &filename) const
+void NOMAD::Parameters::write_to_file(const std::string &filename) const
 {
     // VRM: Not complete yet. TODO.
     std::cout << "VRM: Output to file " << filename << std::endl;
@@ -304,7 +317,7 @@ void Parameters::write_to_file(const std::string &filename) const
         throw NOMAD::Exception(__FILE__, __LINE__, err);
     }
 
-    for (std::set<Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
+    for (std::set<NOMAD::Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
         fout << it->get_category() << " ";
         fout << it->get_type() << " ";
@@ -316,9 +329,9 @@ void Parameters::write_to_file(const std::string &filename) const
     fout.close();
 }
 
-void Parameters::debug_display() const
+void NOMAD::Parameters::debug_display() const
 {
-    for (std::set<Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
+    for (std::set<NOMAD::Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
         std::cout << it->get_category() << " ";
         std::cout << it->get_type() << " ";

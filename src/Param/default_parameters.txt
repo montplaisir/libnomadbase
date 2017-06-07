@@ -13,7 +13,8 @@ ALGO std::string    DESCRIPTION     COMMENTS HERE (max one line)  \n\
 ALGO bool           IS_RANDOM       false  \n\
 ALGO int            MAX_BB_EVAL     -1  \n\
 ALGO bool           TIMES_N         false  \n\
-ALGO NOMAD::Point   X0                          #if defined, replaces the default Problem::_x0  \n\
+ALGO std::string    X0                          # VRM this one can be either a file name  \n\
+                                                # (std::string) or a point (NOMAD::Point)  \n\
 ALGO bool           VNS_SEARCH      false  \n\
 ALGO NOMAD::Double  VNS_TRIGGER  \n\
 ALGO int[2]         LH_SEARCH       -1 -1       #VRM how will I treat that one?  \n\
@@ -53,11 +54,8 @@ PROBLEM int     DIMENSION       -1  \n\
 PROBLEM int     DISPLAY_DEGREE  NOMAD::NORMAL_DISPLAY  \n\
 PROBLEM std::list<std::string>  DISPLAY_STATS       #VRM un autre pas evident  \n\
 PROBLEM std::string     TMP_DIR  \n\
-PROBLEM std::string     X0                          # VRM this one can be either a file name  \n\
-                                                    # (std::string) or a point (NOMAD::Point)  \n\
 PROBLEM std::string     BB_EXE  \n\
 PROBLEM std::vector<NOMAD::bb_output_type>      BB_OUTPUT_TYPE  \n\
-PROBLEM int             MAX_BB_EVAL     -1  \n\
   \n\
 # Runner parameters  \n\
 RUNNER std::string  DATE            # For info  \n\

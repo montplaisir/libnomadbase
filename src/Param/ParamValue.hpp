@@ -5,8 +5,9 @@
 #include <Math/Double.hpp>
 #include <boost/variant.hpp>
 
-typedef boost::variant<NOMAD::Double, bool, std::string> ValueVariant;
+#include "nomad_nsbegin.hpp"
 
+typedef boost::variant<NOMAD::Double, bool, std::string> ValueVariant;
 
 class ParamValue
 {
@@ -26,19 +27,19 @@ public:
     ParamValue(const std::string type_string, const std::string value_string);
 
     // Copy constructor
-    ParamValue(const ParamValue &v);
+    ParamValue(const NOMAD::ParamValue &v);
 
     // Affectation operators.
-    ParamValue & operator = ( const ParamValue & v );
+    ParamValue & operator = ( const NOMAD::ParamValue & v );
     ParamValue & operator = ( const double & d );
     ParamValue & operator = ( const char* & s );
 
 
     // Comparison operators
-    inline bool operator==(const ParamValue& rhs) const {
+    inline bool operator==(const NOMAD::ParamValue& rhs) const {
         return m_valuevariant == rhs.m_valuevariant;
     }
-    inline bool operator!=(const ParamValue& rhs) const {
+    inline bool operator!=(const NOMAD::ParamValue& rhs) const {
         return !(*this == rhs);
     }
 
@@ -56,7 +57,7 @@ public:
     // as the current valuevariant.
     void update_valuevariant(const std::string type_string, const std::string value_string);
 
-    friend std::ostream& operator<<(std::ostream& stream, const ParamValue& v)
+    friend std::ostream& operator<<(std::ostream& stream, const NOMAD::ParamValue& v)
     {
         stream << v.get_valuevariant();
         return stream;
@@ -67,5 +68,7 @@ public:
     std::string type_string() const;
 
 };
+
+#include "nomad_nsend.hpp"
 
 #endif

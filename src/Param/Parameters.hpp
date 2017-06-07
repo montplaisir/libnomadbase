@@ -6,12 +6,13 @@
 #include <vector>
 #include "Param.hpp"
 
+#include "nomad_nsbegin.hpp"
 
 // Manage all parameters.
 class Parameters
 {
 private:
-    std::set<Param> m_params;
+    std::set<NOMAD::Param> m_params;
 
     static const std::vector<std::string> m_param_categories;
 
@@ -23,16 +24,36 @@ public:
 
     // Add a Param to the list.
     // True if p was correctly added.
-    bool add(const Param &p);
+    bool add(const NOMAD::Param &p);
 
     // Update parameter value with new value.
-    bool update(Param &p, const std::string value_string);
+    bool update(NOMAD::Param &p, const std::string value_string);
 
     // Get param by name
-    bool find(const std::string name, Param &foundparam) const;
+    bool find(const std::string name, NOMAD::Param &foundparam) const;
 
+    // Get/Set
     // Get param value by name. Return value as string.
     std::string get_value_str(const std::string name) const;
+    // Get param value, specifying return type.
+    template <typename T>
+    T get_value(const std::string name) const
+    {
+        std::set<NOMAD::Param>::const_iterator it;
+        for (it = m_params.begin(); it != m_params.end(); it++)
+        {
+            if (name == it->get_name())
+            {
+                return it->get_value<T>();
+            }
+        }
+        std::string err = "Parameter is not defined: " + name;
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+        return T();
+    }
+
+    // Check if a parameter of that name exists.
+    bool is_defined(const std::string name) const;
 
     // Helpers for reader
     static bool is_parameter_category(const std::string s);
@@ -55,6 +76,7 @@ public:
     void write_to_file(const std::string &filename) const;
 };
 
+#include "nomad_nsend.hpp"
 
 
 #endif

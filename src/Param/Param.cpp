@@ -6,7 +6,7 @@ using namespace std;
 // Constructors
 
 // Constructor from string values
-Param::Param(std::string name,
+NOMAD::Param::Param(std::string name,
              std::string value_string,
              std::string type_string,
              std::string category,
@@ -21,8 +21,8 @@ Param::Param(std::string name,
     
 
 // General constructor
-Param::Param(std::string name,
-             ParamValue paramvalue,
+NOMAD::Param::Param(std::string name,
+             NOMAD::ParamValue paramvalue,
              std::string category,
              bool value_is_const)
   : m_name(name),
@@ -33,7 +33,7 @@ Param::Param(std::string name,
     init();
 }
 
-void Param::Param::init()
+void NOMAD::Param::Param::init()
 {
     // Convert name to capital letters
     NOMAD::toupper(m_name);
@@ -42,35 +42,35 @@ void Param::Param::init()
     if (!name_is_valid(m_name))
     {
         std::string err = "Param name \"" + m_name + "\" is not valid";
-        throw NOMAD::Exception("Param.cpp", __LINE__, err);
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
     }
     if (!m_paramvalue.is_valid())
     {
         //std::string err = "Param value is not valid";
-        throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is not valid");
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is not valid");
     }
 }
 
-std::string Param::get_name() const
+std::string NOMAD::Param::get_name() const
 {
     return m_name;
 }
 
-void Param::set_name(const std::string name)
+void NOMAD::Param::set_name(const std::string name)
 {
     if (!name_is_valid(name))
     {
-        throw NOMAD::Exception("Param.cpp", __LINE__, "Param name is not valid");
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param name is not valid");
     }
     m_name = name;
 }
 
-ParamValue Param::get_paramvalue() const
+NOMAD::ParamValue NOMAD::Param::get_paramvalue() const
 {
     return m_paramvalue;
 }
 
-std::string Param::get_value_str() const
+std::string NOMAD::Param::get_value_str() const
 {
     std::string ret_str = "";
 
@@ -97,7 +97,7 @@ std::string Param::get_value_str() const
     return ret_str;
 }
 
-void Param::set_value_str(const std::string value_string)
+void NOMAD::Param::set_value_str(const std::string value_string)
 {
     try
     {
@@ -114,15 +114,15 @@ void Param::set_value_str(const std::string value_string)
 }
 
 
-void Param::set_paramvalue(const ParamValue paramvalue)
+void NOMAD::Param::set_paramvalue(const NOMAD::ParamValue paramvalue)
 {
     if (m_value_is_const)
     {
-        throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is const and cannot be modified");
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
     }
     if (!paramvalue.is_valid())
     {
-        throw NOMAD::Exception("Param.cpp", __LINE__, "Param value is not valid");
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is not valid");
     }
     m_paramvalue = paramvalue;
 }
@@ -155,7 +155,7 @@ bool is_underscore(const char &c)
 }
 
 // Validate the string as a parameter name
-bool Param::name_is_valid(const std::string &name)
+bool NOMAD::Param::name_is_valid(const std::string &name)
 {
     // Param name should be of the form:
     // Capital letter, followed by a combination of capital letters, numbers
@@ -185,7 +185,7 @@ bool Param::name_is_valid(const std::string &name)
     return true;
 }
 
-bool Param::operator< (const Param &p) const
+bool NOMAD::Param::operator< (const NOMAD::Param &p) const
 {
     // Parameter name is the key, when adding to Parameters.
     // If a parameter already exists with this name, it will be 

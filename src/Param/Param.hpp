@@ -8,18 +8,19 @@
 
 #include "ParamValue.hpp"
 
-// Class for all Parameters.
+#include "nomad_nsbegin.hpp"
 
+// Class for all Parameters.
 
 class Param
 {
 private:
-    std::string     m_name;         // Name of the parameter. Will be converted to caps.
-                                    // Naming has some rules.
-    ParamValue      m_paramvalue;   // See ValueVariant. Type could be std::string,
-                                    // NOMAD::Double, bool, etc.
-    std::string     m_category;     // ALGO, PROBLEM, RUNNER, USER
-    bool            m_value_is_const;   // If we can modify this parameter's value
+    std::string         m_name;         // Name of the parameter. Will be converted to caps.
+                                        // Naming has some rules.
+    NOMAD::ParamValue   m_paramvalue;   // See ValueVariant. Type could be std::string,
+                                        // NOMAD::Double, bool, etc.
+    std::string         m_category;     // ALGO, PROBLEM, RUNNER, USER
+    bool                m_value_is_const;   // If we can modify this parameter's value
 
     void    init();
 
@@ -34,7 +35,7 @@ public:
           bool value_is_const = true);
     // Constructor
     Param(std::string name,
-          ParamValue paramvalue,            // Value type defined through ParamValue
+          NOMAD::ParamValue paramvalue,     // Value type defined through ParamValue
           std::string category = "USER",
           bool value_is_const = true);
 
@@ -47,7 +48,7 @@ public:
     void set_name(const std::string name);
 
     // Return value as a ParamValue
-    ParamValue get_paramvalue() const;
+    NOMAD::ParamValue get_paramvalue() const;
     // Return value in its type
     template<typename T>
     T get_value() const
@@ -64,17 +65,19 @@ public:
 
 
 
-    void set_paramvalue(const ParamValue paramvalue);
+    void set_paramvalue(const NOMAD::ParamValue paramvalue);
 
     bool value_is_const() const { return m_value_is_const; }
 
     // Validate the string as a parameter name
     static bool name_is_valid(const std::string &name);
     // Validate the paramvalue
-    static bool value_is_valid(const ParamValue &paramvalue);
+    static bool value_is_valid(const NOMAD::ParamValue &paramvalue);
 
     // Comparison operator for insertion in set
-    bool operator< (const Param &p) const;
+    bool operator< (const NOMAD::Param &p) const;
 };
+
+#include "nomad_nsend.hpp"
 
 #endif
