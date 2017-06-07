@@ -5,3 +5,5 @@ Instead, ParamValue could hold two strings: type and value.
 Connect this with Runner.
 
 Use namespace NOMAD on parameter classes
+
+Compile on Windows. Asses usage of boost.
