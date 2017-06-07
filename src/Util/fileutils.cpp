@@ -32,6 +32,19 @@ bool NOMAD::check_read_file ( const std::string & file_name )
 #endif
 }
 
+/*-----------------------------------------------------------------*/
+/*              check if a file exists and is writable             */
+/*-----------------------------------------------------------------*/
+bool NOMAD::check_write_file ( const std::string & file_name )
+{
+#ifdef _MSC_VER
+    return ( _access ( file_name.c_str() , 6 ) == 0 );
+#else
+    return ( access ( file_name.c_str() , W_OK ) == 0 );
+#endif
+}
+
+
 // Get current directory.
 std::string NOMAD::curdir()
 {

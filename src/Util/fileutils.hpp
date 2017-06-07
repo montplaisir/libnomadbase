@@ -35,6 +35,13 @@
      */
     bool check_read_file ( const std::string & file_name );
 
+    /// Check if a file exists and is writable.
+    /**
+     \param file_name A string corresponding to a file name -- \b IN.
+     \return          A boolean equal to \c true if the file exists and is writable.
+     */
+    bool check_write_file ( const std::string & file_name );
+
     // Get current directory
     std::string curdir();
 
