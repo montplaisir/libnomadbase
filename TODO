@@ -1,0 +1,9 @@
+Simplify interface. ParamValue is for internal use. 
+Consider not using variants, because it seems more confusing than useful.
+Instead, ParamValue could hold two strings: type and value.
+
+Connect this with Runner.
+
+Use namespace NOMAD on parameter classes
+
+Compile on Windows. Asses usage of boost.

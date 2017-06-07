@@ -6,6 +6,7 @@
  \see    Double.hpp
  */
 #include "Math/Double.hpp"
+#include <boost/lexical_cast.hpp>
 
 /*-----------------------------------*/
 /*   static members initialization   */
@@ -90,6 +91,33 @@ const double & NOMAD::Double::todouble ( void ) const
         throw Not_Defined ( "Double.cpp" , __LINE__ ,
                            "NOMAD::Double::todouble(): value not defined" );
     return _value;
+}
+
+/*-----------------------------------------------*/
+/*          get the value as a string            */
+/*-----------------------------------------------*/
+const std::string NOMAD::Double::tostring ( void ) const
+{
+    std::string ret_str;
+
+    if ( _defined )
+    {
+        if ( _value == NOMAD::INF )
+            ret_str = NOMAD::Double::_inf_str;
+        else if ( _value == -NOMAD::INF )
+            ret_str = "-" + NOMAD::Double::_inf_str;
+        else if ( std::floor(_value) == std::ceil(_value) && fabs(_value) < INT_MAX-1 )
+            ret_str =  static_cast<int>(_value);
+        else
+            boost::lexical_cast<std::string>(_value);
+    }
+    else
+    {
+        ret_str = NOMAD::Double::_undef_str;
+    }
+
+    return ret_str;
+
 }
 
 /*------------------------------------------*/

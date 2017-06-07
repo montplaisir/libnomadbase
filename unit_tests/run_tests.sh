@@ -11,16 +11,18 @@ fi
 BIN_TEST_DIR=$1
 
 tput setaf 3; echo; echo "Running Unit tests"
-for test in `ls $BIN_TEST_DIR`
+for test in `ls $BIN_TEST_DIR | grep _unittest`
 do
-    test_failed=`$BIN_TEST_DIR/$test | grep FAILED`
+    tput setaf 2; test_failed=`$BIN_TEST_DIR/$test | grep FAILED`
     if [ "$test_failed" != "" ]
     then
+        # Failure in red
         tput setaf 1; echo "$test failure"
     else
+        # Success in green
         tput setaf 2; echo "$test success"
     fi
 done
 
 #reset color.
-tput setaf 0
+tput sgr0

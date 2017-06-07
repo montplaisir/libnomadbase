@@ -4,8 +4,11 @@ VARIANT             = release
 ifndef TOP
 $(error TOP needs to be defined)
 endif
+ifndef BUILD_DIR
+$(error BUILD_DIR needs to be defined)
+endif
 
-BUILD_DIR           = $(TOP)/build/$(VARIANT)
+
 SRC_DIR             = $(TOP)/src
 INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
 OBJ_DIR             = $(BUILD_DIR)/obj
@@ -20,7 +23,8 @@ COMPILE             = g++ $(CXXFLAGS) $(INCLFLAGS)
 
 all: $(INCLUDE_DIR)/Param $(OBJ_DIR)/ParamValue.o $(OBJ_DIR)/Param.o $(OBJ_DIR)/Parameters.o
 
-$(INCLUDE_DIR)/Param: ParamValue.hpp Param.hpp Parameters.hpp
+#Note: also copy default_parameters.txt.
+$(INCLUDE_DIR)/Param: ParamValue.hpp Param.hpp Parameters.hpp default_parameters.txt
 	@mkdir -p $@
 	@cp -f $^ $@
 

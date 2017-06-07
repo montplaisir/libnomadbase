@@ -14,7 +14,8 @@ OBJ_DIR             = $(BUILD_DIR)/obj
 LIB_DIR             = $(BUILD_DIR)/lib
 
 #VRM I don't know how to avoid listing all objects to compile the library.
-OBJ_LIB             = Double.o Exception.o LHS.o Parameters.o Param.o ParamValue.o Point.o RNG.o utils.o Vector.o
+OBJ_LIB             = Double.o Exception.o LHS.o Parameters.o Param.o \
+                      ParamValue.o Point.o RNG.o fileutils.o utils.o Vector.o
 OBJ_LIB             := $(addprefix $(OBJ_DIR)/,$(OBJ_LIB))
 
 
@@ -47,8 +48,8 @@ all: $(INCLUDE_DIR)
 	$(MAKE) $(LIB_DYNAMIC)
 
 $(INCLUDE_DIR): nomad_nsbegin.hpp nomad_nsend.hpp nomad_nsuse.hpp nomad_version.hpp
-	@mkdir -p $@
-	@cp -f $^ $@
+	mkdir -p $@
+	cp -f $^ $@
 
 $(LIB_DYNAMIC): $(OBJ_LIB) $(INCLUDE_DIR)
 	@mkdir -p $(LIB_DIR)

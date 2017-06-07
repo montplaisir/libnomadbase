@@ -5,10 +5,13 @@ endif
 ifndef ($(VARIANT))
 VARIANT             = release
 endif
+ifndef BUILD_DIR
+$(error BUILD_DIR needs to be defined)
+endif
+
 
 UNAME := $(shell uname)
 
-BUILD_DIR           = $(TOP)/build/$(VARIANT)
 SRC_DIR             = $(TOP)/src
 INCLUDE_DIR         = $(BUILD_DIR)/include/libnomadbase
 OBJ_DIR             = $(BUILD_DIR)/obj
