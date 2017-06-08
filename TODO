@@ -18,4 +18,14 @@ std::list<std::string> DISPLAY_STATS
 int[2] LH_SEARCH
 etc. This is another reason to use strings instead of variants in ParamValue.
 
-
+Format of the default parameters file:
+Maybe using a format like XML (or JSON, but XML seems better suited in this case), would
+help for the default parameter file. See TinyXML-2 as a library for parsing XML. It is
+lightweight, easy to use, and does the minimum, which is what we need.
+Format should include:
+Parameter description for help output (see NOMAD_3 - Parameters.cpp - help())
+If the parameter is basic / advanced / developer (ibidem)
+Is the value required or not.
+Such a format would potentially be easier to parse, in particular for parameter
+description. We would still have to determine how to write a parameter that can
+have multiple types.
