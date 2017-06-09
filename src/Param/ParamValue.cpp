@@ -3,39 +3,171 @@
 
 // Constructors
 NOMAD::ParamValue::ParamValue(const NOMAD::Double value)
-  : m_valuevariant(value)
-{
-}
-
-NOMAD::ParamValue::ParamValue(const bool value)
-  : m_valuevariant(value)
-{
-}
-
-NOMAD::ParamValue::ParamValue(const std::string value)
-  : m_valuevariant(value)
+  : m_type_str("NOMAD::Double"),
+    m_value_str(value.tostring())
 {
 }
 
 NOMAD::ParamValue::ParamValue(const double value)
+  : m_type_str("NOMAD::Double"),
+    m_value_str()
 {
-    // Need explicit conversion.
-    m_valuevariant = NOMAD::Double(value);
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
+}
+
+NOMAD::ParamValue::ParamValue(const std::string value)
+  : m_type_str("std::string"),
+    m_value_str(value)
+{
 }
 
 NOMAD::ParamValue::ParamValue(const char* value)
+  : m_type_str("std::string"),
+    m_value_str(value)
 {
-    // Need explicit conversion.
-    m_valuevariant = std::string(value);
+}
+
+NOMAD::ParamValue::ParamValue(const int value)
+  : m_type_str("int"),
+    m_value_str()
+{
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
+}
+
+NOMAD::ParamValue::ParamValue(const bool value)
+  : m_type_str("bool"),
+    m_value_str()
+{
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
 }
 
 NOMAD::ParamValue::ParamValue(const std::string type_string, const std::string value_string)
+  : m_type_str(type_string),
+    m_value_str(value_string)
 {
-    //std::cout << "VRM: create ParamValue with type = " << type_string << ", value = " << value_string << std::endl;
-    update_valuevariant(type_string, value_string);
 }
 
-void NOMAD::ParamValue::update_valuevariant(const std::string type_string, const std::string value_string)
+
+// Copy constructor
+NOMAD::ParamValue::ParamValue(const NOMAD::ParamValue &v)
+  : m_type_str(v.m_type_str),
+    m_value_str(v.m_value_str)
+{
+}
+
+// Affectation operators
+NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const NOMAD::ParamValue & v )
+{
+    m_type_str  = v.m_type_str;
+    m_value_str = v.m_value_str;
+
+    return *this;
+}
+
+// Validate the parameter value
+bool NOMAD::ParamValue::is_valid() const
+{
+    bool is_valid = true;
+    return is_valid;
+}
+
+NOMAD::Double NOMAD::ParamValue::get_value_double() const
+{
+    NOMAD::Double d = 0.0;
+    std::string err = "ERROR: Could not convert this value to NOMAD::Double : " + m_value_str;
+    if ("NOMAD::Double" != m_type_str)
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+
+    if (!d.atof(m_value_str))
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+
+    return d;
+}
+
+bool NOMAD::ParamValue::get_value_bool() const
+{
+    bool b = false;
+    std::string err = "ERROR: Could not convert this value to bool : " + m_value_str;
+
+    if ("bool" != m_type_str)
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+
+    int intb = NOMAD::string_to_bool(m_value_str);
+    if (intb < 0)
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+    b = intb;
+
+    return b;
+}
+
+int NOMAD::ParamValue::get_value_int() const
+{
+    int i = 0;
+    std::string err = "ERROR: Could not convert this value to int : " + m_value_str;
+
+    if ("int" != m_type_str)
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+    
+    if (!NOMAD::atoi(m_value_str, i))
+    {
+        throw NOMAD::Exception(__FILE__,__LINE__,err);
+    }
+
+    return i;
+}
+
+
+// Get string value at index
+std::string NOMAD::ParamValue::get_value_str(const int index) const
+{
+    std::string ret_str = "";
+    size_t split_index1 = 0;
+    size_t split_index2 = m_value_str.find(' ', split_index1+1);
+
+    if (0 == index)
+    {
+        // start and end of substr is different for this case.
+        ret_str = m_value_str.substr(split_index1, split_index2);
+    }
+    else
+    {
+        int i = 0;
+        for (; i < index && split_index1 != std::string::npos
+                         && split_index2 != std::string::npos; i++)
+        {
+            split_index1 = split_index2;
+            split_index2 = m_value_str.find(' ', split_index1+1);
+        }
+        if (i < index)
+        {
+            // Reached end of string before reaching substring for index
+            std::cout << "Warning: End of string reached before index " << index << std::endl;
+        }
+        ret_str = m_value_str.substr(split_index1+1, split_index2-split_index1-1);
+    }
+
+    return ret_str;
+}
+
+// VRM this code will be useful, keep it for reference
+/*
+void NOMAD::ParamValue::update_value_str(const std::string type_string, const std::string value_string)
 {
     std::string err = "Error: " + type_string + " value ill-defined: \"" + value_string + "\"";
 
@@ -74,93 +206,4 @@ void NOMAD::ParamValue::update_valuevariant(const std::string type_string, const
     }
 
 }
-
-// Copy constructor
-NOMAD::ParamValue::ParamValue(const NOMAD::ParamValue &v)
-  : m_valuevariant(v.m_valuevariant)
-{
-}
-
-// Affectation operators
-NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const NOMAD::ParamValue & v )
-{
-    m_valuevariant = v.m_valuevariant;
-
-    return *this;
-}
-
-NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const double & d )
-{
-    m_valuevariant = d;
-
-    return *this;
-}
-
-NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const char* & s )
-{
-    m_valuevariant = std::string(s);
-
-    return *this;
-}
-
-// Class used to validate the variant ParamValue - see is_valid() below.
-class Validator : public boost::static_visitor<bool>
-{
-public:
-    bool operator()(const bool &b) const
-    {
-        return true;
-    }
-    bool operator()(const NOMAD::Double &d) const
-    {
-        // Accept undefined NOMAD::Double
-        /* if (!d.is_defined())
-        {
-            return false;
-        }*/
-        return true;
-    }
-    bool operator()(const std::string &s) const
-    {
-        // Accept empty strings.
-        return true;
-    }
-};
-
-// Validate the parameter value
-bool NOMAD::ParamValue::is_valid() const
-{
-    Validator validator;
-    bool is_valid = boost::apply_visitor( validator, m_valuevariant);
-    return is_valid;
-}
-
-// Class used to convert the variant to string.
-class ConverterToString : public boost::static_visitor<std::string>
-{
-public:
-    std::string operator()(const bool &v) const
-    {
-        return std::string("bool");
-    }
-    std::string operator()(const NOMAD::Double &v) const
-    {
-        return std::string("NOMAD::Double");
-    }
-    std::string operator()(const std::string &v) const
-    {
-        return std::string("std::string");
-    }
-};
-
-// Convert the parameter type to a string describing the type.
-std::string NOMAD::ParamValue::type_string() const
-{
-    ConverterToString converter;
-    std::string ret_str = boost::apply_visitor( converter, m_valuevariant);
-    return ret_str;
-}
-
-
-
-
+*/

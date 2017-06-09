@@ -3,27 +3,26 @@
 #define __RUNNER400_PARAMVALUE__
 
 #include <Math/Double.hpp>
-#include <boost/variant.hpp>
 
 #include "nomad_nsbegin.hpp"
-
-typedef boost::variant<NOMAD::Double, bool, std::string> ValueVariant;
 
 class ParamValue
 {
 private:
-    ValueVariant m_valuevariant;
+    std::string m_type_str;
+    std::string m_value_str;
 
 public:
     // Constructors - One for each supported type, and more to avoid implicit conversions.
     // Non-explicit to allow assignments like ParamValue v = 1.23
     ParamValue(const NOMAD::Double value);
-    ParamValue(const bool value);
-    ParamValue(const std::string value);
     ParamValue(const double value);
+    ParamValue(const std::string value);
     ParamValue(const char* value);
+    ParamValue(const int value);
+    ParamValue(const bool value);
 
-    // Constructor from string values.
+    // General constructor.
     ParamValue(const std::string type_string, const std::string value_string);
 
     // Copy constructor
@@ -31,13 +30,11 @@ public:
 
     // Affectation operators.
     ParamValue & operator = ( const NOMAD::ParamValue & v );
-    ParamValue & operator = ( const double & d );
-    ParamValue & operator = ( const char* & s );
 
 
     // Comparison operators
     inline bool operator==(const NOMAD::ParamValue& rhs) const {
-        return m_valuevariant == rhs.m_valuevariant;
+        return m_type_str == rhs.m_type_str && m_value_str == rhs.m_value_str;
     }
     inline bool operator!=(const NOMAD::ParamValue& rhs) const {
         return !(*this == rhs);
@@ -46,26 +43,22 @@ public:
     bool is_valid() const;
 
     // Get/Set
-    template <typename T>
-    T get_value() const
-    {
-        return boost::get<T>(m_valuevariant);
-    }
-    ValueVariant get_valuevariant() const { return m_valuevariant; }
-    void set_valuevariant(const ValueVariant value) { m_valuevariant = value; }
-    // Update valuevariant, assuming the input string is for a value of the same type
-    // as the current valuevariant.
-    void update_valuevariant(const std::string type_string, const std::string value_string);
+    std::string get_type_str() const { return m_type_str; }
 
+    NOMAD::Double   get_value_double()              const;
+    bool            get_value_bool()                const;
+    int             get_value_int()                 const;
+    std::string     get_value_str()                 const { return m_value_str; }
+    std::string     get_value_str(const int index)  const;
+
+    void set_value_str(const std::string value_string) { m_value_str = value_string; }
+
+    // operator<<
     friend std::ostream& operator<<(std::ostream& stream, const NOMAD::ParamValue& v)
     {
-        stream << v.get_valuevariant();
+        stream << v.get_value_str();
         return stream;
     }
-
-    // Return a string for the type in ValueVariant.
-    // Ex. "NOMAD::Double", "bool", "std::string", etc.
-    std::string type_string() const;
 
 };
 
