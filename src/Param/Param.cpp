@@ -3,9 +3,7 @@
 #include <Util/utils.hpp>
 using namespace std;
 
-// Constructors
-
-// Constructor from string values
+// Constructor with strings
 NOMAD::Param::Param(std::string name,
              std::string value_string,
              std::string type_string,
@@ -19,10 +17,9 @@ NOMAD::Param::Param(std::string name,
     init();
 }
     
-
-// General constructor
+// Constructor with ParamValue
 NOMAD::Param::Param(std::string name,
-             NOMAD::ParamValue paramvalue,
+             ParamValue paramvalue,
              std::string category,
              bool value_is_const)
   : m_name(name),
@@ -33,7 +30,7 @@ NOMAD::Param::Param(std::string name,
     init();
 }
 
-void NOMAD::Param::Param::init()
+void NOMAD::Param::init()
 {
     // Convert name to capital letters
     NOMAD::toupper(m_name);
@@ -46,8 +43,8 @@ void NOMAD::Param::Param::init()
     }
     if (!m_paramvalue.is_valid())
     {
-        //std::string err = "Param value is not valid";
-        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is not valid");
+        std::string err = "Param value \"" + m_paramvalue.get_value_str() + "\" is not valid for type " + m_paramvalue.get_type_str();
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
     }
 }
 
@@ -65,67 +62,130 @@ void NOMAD::Param::set_name(const std::string name)
     m_name = name;
 }
 
-NOMAD::ParamValue NOMAD::Param::get_paramvalue() const
+
+// VRM set_value could use a template, but then calls like set_value(1.23) would
+// become less simple to write.
+void NOMAD::Param::set_value(const std::string value)
 {
-    return m_paramvalue;
-}
-
-std::string NOMAD::Param::get_value_str() const
-{
-    std::string ret_str = "";
-
-    if (this->get_type() == "std::string")
+    if (m_value_is_const)
     {
-        ret_str = this->get_value<std::string>();
-    }
-    else if (this->get_type() == "bool")
-    {
-        bool value = this->get_value<bool>();
-        ret_str = (value) ? "true" : "false";
-    }
-    else if (this->get_type() == "NOMAD::Double")
-    {
-        NOMAD::Double d = this->get_value<NOMAD::Double>();
-        ret_str = d.tostring();
-    }
-    else
-    {
-        std::string err = "Unknown parameter type: " + this->get_type();
-        throw NOMAD::Exception(__FILE__,__LINE__,err);
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
     }
 
-    return ret_str;
-}
-
-void NOMAD::Param::set_value_str(const std::string value_string)
-{
     try
     {
-        m_paramvalue.update_valuevariant(this->get_type(), value_string);
-        std::cout << "VRM: set_value_str, m_paramvalue is now: " << get_value_str() << std::endl;
+        m_paramvalue.set_value(value);
     }
     catch (NOMAD::Exception &e)
     {
         std::cerr << "Could not set parameter " << this->get_name();
-        std::cerr << " to value \"" << value_string << "\". Exception thrown: ";
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
+void NOMAD::Param::set_value(const char* value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+
+    try
+    {
+        m_paramvalue.set_value(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
+void NOMAD::Param::set_value(const NOMAD::Double value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+
+    try
+    {
+        m_paramvalue.set_value(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
+void NOMAD::Param::set_value(const double value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+
+    try
+    {
+        m_paramvalue.set_value(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
+void NOMAD::Param::set_value(const bool value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+
+    try
+    {
+        m_paramvalue.set_value(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
+
+void NOMAD::Param::set_value(const int value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+
+    try
+    {
+        m_paramvalue.set_value(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to value \"" << value << "\". Exception thrown: ";
         std::cerr << e.what();
         std::cerr << std::endl;
     }
 }
 
 
-void NOMAD::Param::set_paramvalue(const NOMAD::ParamValue paramvalue)
-{
-    if (m_value_is_const)
-    {
-        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
-    }
-    if (!paramvalue.is_valid())
-    {
-        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is not valid");
-    }
-    m_paramvalue = paramvalue;
-}
 
 bool is_capletter(const char &c)
 {

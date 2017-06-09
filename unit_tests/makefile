@@ -49,7 +49,7 @@ INCLFLAGS = -I$(INCLUDE_DIR)
 #TESTS = double_unittest point_unittest vector_unittest lhs_unittest \
 #        parameters_unittest param_unittest paramvalue_unittest
 # VRM
-TESTS = parameters_unittest 
+TESTS = param_unittest 
 TESTS := $(addprefix $(BIN_TEST_DIR)/,$(TESTS))
 
 # All Google Test headers.  Usually you shouldn't change this
@@ -151,8 +151,8 @@ $(BIN_TEST_DIR)/% : $(OBJ_TEST_DIR)/%.o \
 run: $(TESTS)
 	#$(UNIT_TESTS_DIR)/run_tests.sh $(BIN_TEST_DIR)
 	#$(BIN_TEST_DIR)/paramvalue_unittest
-	#$(BIN_TEST_DIR)/param_unittest
-	$(BIN_TEST_DIR)/parameters_unittest
+	$(BIN_TEST_DIR)/param_unittest
+	#$(BIN_TEST_DIR)/parameters_unittest
 
 
 

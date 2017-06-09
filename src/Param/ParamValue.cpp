@@ -73,7 +73,54 @@ NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const NOMAD::ParamValue & v 
 // Validate the parameter value
 bool NOMAD::ParamValue::is_valid() const
 {
-    bool is_valid = true;
+    bool is_valid = false;
+    
+    // Validate that value string can be converted to type given by m_type_string.
+    if ("NOMAD::Double" == m_type_str)
+    {
+        try
+        {
+            NOMAD::Double d = get_value_double();
+            if (d.is_defined())
+            {
+                is_valid = true;
+            }
+        }
+        catch (NOMAD::Exception &e)
+        {
+            is_valid = false;
+        }
+    }
+    else if ("std::string" == m_type_str)
+    {
+        // all strings are valid for now.
+        is_valid = true;
+    }
+    else if ("bool" == m_type_str)
+    {
+        try
+        {
+            get_value_bool();
+            is_valid = true;
+        }
+        catch (NOMAD::Exception &e)
+        {
+            is_valid = false;
+        }
+    }
+    else if ("int" == m_type_str)
+    {
+        try
+        {
+            get_value_int();
+            is_valid = true;
+        }
+        catch (NOMAD::Exception &e)
+        {
+            is_valid = false;
+        }
+    }
+
     return is_valid;
 }
 
@@ -164,6 +211,44 @@ std::string NOMAD::ParamValue::get_value_str(const int index) const
 
     return ret_str;
 }
+
+
+void NOMAD::ParamValue::set_value(const NOMAD::Double value)
+{
+    m_type_str = "NOMAD::Double";
+    m_value_str = value.tostring();
+}
+
+void NOMAD::ParamValue::set_value(const double value)
+{
+    m_type_str = "NOMAD::Double";
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
+}
+
+void NOMAD::ParamValue::set_value(const bool value)
+{
+    m_type_str = "bool";
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
+}
+
+void NOMAD::ParamValue::set_value(const char* value)
+{
+    m_type_str = "std::string";
+    m_value_str = value;
+}
+
+void NOMAD::ParamValue::set_value(const int value)
+{
+    m_type_str = "int";
+    std::stringstream ss;
+    ss << value;
+    m_value_str = ss.str();
+}
+
 
 // VRM this code will be useful, keep it for reference
 /*

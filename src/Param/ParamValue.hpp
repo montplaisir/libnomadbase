@@ -51,7 +51,12 @@ public:
     std::string     get_value_str()                 const { return m_value_str; }
     std::string     get_value_str(const int index)  const;
 
-    void set_value_str(const std::string value_string) { m_value_str = value_string; }
+    void set_value(const NOMAD::Double value);
+    void set_value(const double value);
+    void set_value(const bool value);
+    void set_value(const int value);
+    void set_value(const std::string value) { m_value_str = value; }
+    void set_value(const char* value);
 
     // operator<<
     friend std::ostream& operator<<(std::ostream& stream, const NOMAD::ParamValue& v)

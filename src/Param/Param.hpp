@@ -17,7 +17,7 @@ class Param
 private:
     std::string         m_name;         // Name of the parameter. Will be converted to caps.
                                         // Naming has some rules.
-    NOMAD::ParamValue   m_paramvalue;   // See ValueVariant. Type could be std::string,
+    NOMAD::ParamValue   m_paramvalue;   // Type could be std::string,
                                         // NOMAD::Double, bool, etc.
     std::string         m_category;     // ALGO, PROBLEM, RUNNER, USER
     bool                m_value_is_const;   // If we can modify this parameter's value
@@ -27,15 +27,15 @@ private:
 public:
     // Constructor from strings
     Param(std::string name,
-          std::string value_string,         // String representing ParamValue.
-          std::string type_string,          // String representing type for ParamValue.
-                                            // See ValueVariant.
+          std::string value_string,         // String representing parameter value
+          std::string type_string,          // String representing parameter type
                                             // Could be "std::string", "NOMAD::Double", etc.
           std::string category = "USER",
           bool value_is_const = true);
-    // Constructor
+
+    // Constructor with ParamValue
     Param(std::string name,
-          NOMAD::ParamValue paramvalue,     // Value type defined through ParamValue
+          ParamValue paramvalue,
           std::string category = "USER",
           bool value_is_const = true);
 
@@ -43,36 +43,35 @@ public:
     virtual ~Param() {}
 
     // Get/Set
-    // Setting name has some validation.
+
+    // Name - Setting name has some validation.
     std::string get_name() const;
     void set_name(const std::string name);
 
-    // Return value as a ParamValue
-    NOMAD::ParamValue get_paramvalue() const;
-    // Return value in its type
-    template<typename T>
-    T get_value() const
-    {
-        return boost::get<T>(m_paramvalue.get_valuevariant());
-    }
-    // Return value converted to string
-    std::string get_value_str() const;
-    // Set value using a string input. Convert using the type_string.
-    void set_value_str(const std::string value_string);
+    // Get Category
+    std::string         get_category()          const { return m_category; }
 
-    std::string get_category() const { return m_category; }
-    std::string get_type() const { return m_paramvalue.type_string(); }
+    // Get for all supported value types
+    std::string     get_value_str()     const { return m_paramvalue.get_value_str(); }
+    NOMAD::Double   get_value_double()  const { return m_paramvalue.get_value_double(); }
+    bool            get_value_bool()    const { return m_paramvalue.get_value_bool(); }
+    int             get_value_int()     const { return m_paramvalue.get_value_int(); }
+    std::string     get_type_str()      const { return m_paramvalue.get_type_str(); }
 
+    // Set value
+    void            set_value (const std::string value);
+    void            set_value (const char* value);
+    void            set_value (const NOMAD::Double value);
+    void            set_value (const double value);
+    void            set_value (const bool value);
+    void            set_value (const int value);
 
-
-    void set_paramvalue(const NOMAD::ParamValue paramvalue);
-
+    // Get value_is_const
     bool value_is_const() const { return m_value_is_const; }
+
 
     // Validate the string as a parameter name
     static bool name_is_valid(const std::string &name);
-    // Validate the paramvalue
-    static bool value_is_valid(const NOMAD::ParamValue &paramvalue);
 
     // Comparison operator for insertion in set
     bool operator< (const NOMAD::Param &p) const;

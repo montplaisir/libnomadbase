@@ -35,7 +35,6 @@ NOMAD::Parameters::Parameters()
 // If they mismatch with the input, return false. (to be detailed)
 bool NOMAD::Parameters::add(const NOMAD::Param &p)
 {
-    NOMAD::ParamValue pv = p.get_paramvalue();
     std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
     ret = m_params.insert(p);
     bool inserted = ret.second;
@@ -58,8 +57,8 @@ bool NOMAD::Parameters::update(NOMAD::Param &p, const std::string value_string)
     //
     if (!p.value_is_const())
     {
-        std::cout << "VRM: update " << p.get_name() << " to (" << p.get_type() << ") " << value_string << std::endl;
-        p.set_value_str(value_string);
+        std::cout << "VRM: update " << p.get_name() << " to (" << p.get_type_str() << ") " << value_string << std::endl;
+        p.set_value(value_string);
         std::cout << "VRM: update " << p.get_name() << ", value is now " << p.get_value_str() << std::endl;
         return true;
     }
@@ -320,7 +319,7 @@ void NOMAD::Parameters::write_to_file(const std::string &filename) const
     for (std::set<NOMAD::Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
         fout << it->get_category() << " ";
-        fout << it->get_type() << " ";
+        fout << it->get_type_str() << " ";
         fout << it->get_name() << " ";
         fout << it->get_value_str();
         fout << std::endl;
@@ -334,7 +333,7 @@ void NOMAD::Parameters::debug_display() const
     for (std::set<NOMAD::Param>::const_iterator it = m_params.begin(); it != m_params.end(); it++)
     {
         std::cout << it->get_category() << " ";
-        std::cout << it->get_type() << " ";
+        std::cout << it->get_type_str() << " ";
         std::cout << it->get_name() << " ";
         std::cout << it->get_value_str();
         std::cout << std::endl;
