@@ -15,6 +15,14 @@
 
 
 #include "nomad_nsbegin.hpp"
+
+    /// Convert a string in {"YES","NO","Y","N","0","1","TRUE","FALSE"} to a boolean.
+    /**
+     \param s The string -- \b IN.
+     \return  An integer equal to \c 0 for \c false, \c 1 for \c true,
+     and \c -1 if the conversion failed.
+     */
+    int string_to_bool ( const std::string & s );
     
     /// Transform an integer into a string.
     /**
@@ -22,7 +30,6 @@
      \return  The string.
      */
     std::string itos ( const int i );
-    
     
     /// Transform a unsigned long (size_t) into a string.
     /**
