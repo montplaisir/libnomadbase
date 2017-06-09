@@ -106,10 +106,12 @@ const std::string NOMAD::Double::tostring ( void ) const
             ret_str = NOMAD::Double::_inf_str;
         else if ( _value == -NOMAD::INF )
             ret_str = "-" + NOMAD::Double::_inf_str;
-        else if ( std::floor(_value) == std::ceil(_value) && fabs(_value) < INT_MAX-1 )
-            ret_str =  static_cast<int>(_value);
         else
-            boost::lexical_cast<std::string>(_value);
+        {
+            std::stringstream ss;
+            ss << _value;
+            ret_str = ss.str();
+        }
     }
     else
     {
