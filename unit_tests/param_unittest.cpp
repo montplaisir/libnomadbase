@@ -60,16 +60,17 @@ TEST(ParamTest, Basic) {
 
     // Create a parameter with an invalid value (fail)
     std::string name3 = "NAME3";
-    NOMAD::Double value3 = NOMAD::Double();
+    std::string type3 = "bool";
+    std::string value3 = "2";
     try
     {
-        NOMAD::Param p3(name3, value3);
+        NOMAD::Param p3(name3, value3, type3);
         FAIL(); // Fail... unless an exception is thrown.
     }
     catch( const NOMAD::Exception& err )
     {
         // VRM this str checking is too specific, but we will leave it like this for now.
-        std::string expected = "NOMAD::Exception thrown (Param.cpp, 47) Param value \"" + value3.tostring() + "\" is not valid for type NOMAD::Double";
+        std::string expected = "NOMAD::Exception thrown (Param.cpp, 47) Param value \"" + value3 + "\" is not valid for type " + type3;
         EXPECT_EQ( expected, err.what() );
     }
 

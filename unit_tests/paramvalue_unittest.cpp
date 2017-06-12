@@ -82,6 +82,15 @@ TEST(ParamValueTest, Basic) {
     // Will print a warning to cerr.
     std::string s8_get7 = value8.get_value_str(7);
 
+    // A NOMAD::Double is valid even if it is not defined.
+    std::string s9 = NOMAD::DEFAULT_UNDEF_STR; // "NaN"
+    NOMAD::ParamValue value9("NOMAD::Double", s9);
+    NOMAD::Double d9_get = value9.get_value_double();
+    EXPECT_EQ(false, d9_get.is_defined());
+    EXPECT_EQ(NOMAD::DEFAULT_UNDEF_STR, d9_get.tostring());
+    std::string s9_get = value9.get_value_str();
+    EXPECT_EQ(NOMAD::DEFAULT_UNDEF_STR, s9_get);
+
 }
 
 // Step 3. Call RUN_ALL_TESTS() in main().

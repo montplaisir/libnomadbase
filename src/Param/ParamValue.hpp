@@ -10,6 +10,7 @@ class ParamValue
 {
 private:
     std::string m_type_str;
+    bool        m_type_unsupported; // If we accept type as-is, but it is not supported.
     std::string m_value_str;
 
 public:
@@ -40,6 +41,8 @@ public:
         return !(*this == rhs);
     }
 
+    static bool is_type_supported(std::string type_string);
+
     bool is_valid() const;
 
     // Get/Set
@@ -55,7 +58,7 @@ public:
     void set_value(const double value);
     void set_value(const bool value);
     void set_value(const int value);
-    void set_value(const std::string value) { m_value_str = value; }
+    void set_value(const std::string value);
     void set_value(const char* value);
 
     // operator<<

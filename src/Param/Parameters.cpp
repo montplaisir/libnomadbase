@@ -151,9 +151,6 @@ bool NOMAD::Parameters::parse_param_4fields(const std::string line,
         return false;
     }
 
-//std::cout << "VRM: line:" << std::endl;
-//std::cout << line << std::endl;
-//std::cout << "VRM: indices: " << split_index1 << " " << split_index2 << " " << split_index3 << std::endl;
     category        = line.substr(0, split_index1-0);
     type_string     = line.substr(split_index1+1, split_index2-split_index1-1);
     name            = line.substr(split_index2+1, split_index3-split_index2-1);
@@ -245,14 +242,12 @@ void NOMAD::Parameters::parse_line(std::string line)
 
 void NOMAD::Parameters::read_from_file(const std::string &filename)
 {
-    std::cout << "VRM: read_from_file " << filename << std::endl;
     if (filename.empty())
     {
         throw NOMAD::Exception(__FILE__, __LINE__, "File name is empty" );
     }
 
     std::string full_filename = NOMAD::fullpath(filename);
-    std::cout << "VRM: full_filename " << full_filename << std::endl;
     std::ifstream fin;
     std::string err = "Could not open parameters file " + full_filename;
 

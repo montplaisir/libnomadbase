@@ -2,14 +2,20 @@
 #include "ParamValue.hpp"
 
 // Constructors
+
+// Constructor for NOMAD::Double.
 NOMAD::ParamValue::ParamValue(const NOMAD::Double value)
   : m_type_str("NOMAD::Double"),
+    m_type_unsupported(false),
     m_value_str(value.tostring())
 {
 }
 
+// Constructor for double.
+// Convert to NOMAD::Double.
 NOMAD::ParamValue::ParamValue(const double value)
   : m_type_str("NOMAD::Double"),
+    m_type_unsupported(false),
     m_value_str()
 {
     std::stringstream ss;
@@ -17,20 +23,27 @@ NOMAD::ParamValue::ParamValue(const double value)
     m_value_str = ss.str();
 }
 
+// Constructor for std::string.
 NOMAD::ParamValue::ParamValue(const std::string value)
   : m_type_str("std::string"),
+    m_type_unsupported(false),
     m_value_str(value)
 {
 }
 
+// Constructor for char*.
+// Convert to std::string.
 NOMAD::ParamValue::ParamValue(const char* value)
   : m_type_str("std::string"),
+    m_type_unsupported(false),
     m_value_str(value)
 {
 }
 
+// Constructor for int.
 NOMAD::ParamValue::ParamValue(const int value)
   : m_type_str("int"),
+    m_type_unsupported(false),
     m_value_str()
 {
     std::stringstream ss;
@@ -38,8 +51,10 @@ NOMAD::ParamValue::ParamValue(const int value)
     m_value_str = ss.str();
 }
 
+// Constructor for bool.
 NOMAD::ParamValue::ParamValue(const bool value)
   : m_type_str("bool"),
+    m_type_unsupported(false),
     m_value_str()
 {
     std::stringstream ss;
@@ -47,16 +62,31 @@ NOMAD::ParamValue::ParamValue(const bool value)
     m_value_str = ss.str();
 }
 
+// Constructor for a type given as argument (as string).
+// Special cases:
+//  - If the type is NOMAD::Double and the value is an empty string,
+// change it to NOMAD::DEFAULT_UNDEF_STR ("NaN").
+//  - If we know this type is not supported, set flag to true.
 NOMAD::ParamValue::ParamValue(const std::string type_string, const std::string value_string)
   : m_type_str(type_string),
+    m_type_unsupported(false),
     m_value_str(value_string)
 {
+    if ("NOMAD::Double" == type_string && value_string.empty())
+    {
+        m_value_str = NOMAD::DEFAULT_UNDEF_STR;
+    }
+    if (!is_type_supported(type_string))
+    {
+        m_type_unsupported = true;
+    }
 }
 
 
 // Copy constructor
 NOMAD::ParamValue::ParamValue(const NOMAD::ParamValue &v)
   : m_type_str(v.m_type_str),
+    m_type_unsupported(v.m_type_unsupported),
     m_value_str(v.m_value_str)
 {
 }
@@ -64,10 +94,26 @@ NOMAD::ParamValue::ParamValue(const NOMAD::ParamValue &v)
 // Affectation operators
 NOMAD::ParamValue & NOMAD::ParamValue::operator = ( const NOMAD::ParamValue & v )
 {
-    m_type_str  = v.m_type_str;
-    m_value_str = v.m_value_str;
+    m_type_str          = v.m_type_str;
+    m_type_unsupported  = v.m_type_unsupported;
+    m_value_str         = v.m_value_str;
 
     return *this;
+}
+
+// Validate the type given by m_type_string.
+// Unsupported type means the user has to do the conversion from string. There
+// is no constructor for this type and no output to this type.
+bool NOMAD::ParamValue::is_type_supported(std::string type_string)
+{
+    bool is_sup = false;
+    if ( ("NOMAD::Double" == type_string) || ("std::string" == type_string)
+         || ("bool" == type_string) || ("int" == type_string) )
+    {
+        is_sup = true;
+    }
+
+    return is_sup;
 }
 
 // Validate the parameter value
@@ -78,13 +124,11 @@ bool NOMAD::ParamValue::is_valid() const
     // Validate that value string can be converted to type given by m_type_string.
     if ("NOMAD::Double" == m_type_str)
     {
+        // Accept a NOMAD::Double even if it is not defined.
         try
         {
             NOMAD::Double d = get_value_double();
-            if (d.is_defined())
-            {
-                is_valid = true;
-            }
+            is_valid = true;
         }
         catch (NOMAD::Exception &e)
         {
@@ -119,6 +163,11 @@ bool NOMAD::ParamValue::is_valid() const
         {
             is_valid = false;
         }
+    }
+    else
+    {
+        // If we know this type is unsupported, then the value is valid.
+        is_valid = m_type_unsupported;
     }
 
     return is_valid;
@@ -235,6 +284,12 @@ void NOMAD::ParamValue::set_value(const bool value)
     m_value_str = ss.str();
 }
 
+void NOMAD::ParamValue::set_value(std::string value)
+{
+    m_type_str = "std::string";
+    m_value_str = value;
+}
+
 void NOMAD::ParamValue::set_value(const char* value)
 {
     m_type_str = "std::string";
@@ -250,7 +305,7 @@ void NOMAD::ParamValue::set_value(const int value)
 }
 
 
-// VRM this code will be useful, keep it for reference
+// VRM this code will be useful for converting string to type. keep it for reference
 /*
 void NOMAD::ParamValue::update_value_str(const std::string type_string, const std::string value_string)
 {

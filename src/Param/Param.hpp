@@ -31,13 +31,13 @@ public:
           std::string type_string,          // String representing parameter type
                                             // Could be "std::string", "NOMAD::Double", etc.
           std::string category = "USER",
-          bool value_is_const = true);
+          bool value_is_const = false);
 
     // Constructor with ParamValue
     Param(std::string name,
           ParamValue paramvalue,
           std::string category = "USER",
-          bool value_is_const = true);
+          bool value_is_const = false);
 
     // Destructor
     virtual ~Param() {}
@@ -66,8 +66,9 @@ public:
     void            set_value (const bool value);
     void            set_value (const int value);
 
-    // Get value_is_const
+    // Get/Set value_is_const
     bool value_is_const() const { return m_value_is_const; }
+    void            set_value_is_const( const bool is_const ) { m_value_is_const = is_const; }
 
 
     // Validate the string as a parameter name
