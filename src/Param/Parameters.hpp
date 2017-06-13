@@ -23,37 +23,47 @@ public:
     virtual ~Parameters() {}
 
     // Add a Param to the list.
-    // True if p was correctly added.
-    bool add(const NOMAD::Param &p);
+    // True if param was correctly added.
+    bool add(const NOMAD::Param &param);
 
     // Update parameter value with new value.
-    bool update(NOMAD::Param &p, const std::string value_string);
+    // Return value:
+    // 1 if parameter was update.
+    // 0 if parameter was found, but could not be updated.
+    // -1 if parameter was not found.
+    // if parameter was updated, false if it
+    // was not found or could not be update.
+    int update(const std::string param_name, const std::string value_string);
 
-    // Get param by name
-    bool find(const std::string name, NOMAD::Param &foundparam) const;
+    // Delete a Param from the list, by name.
+    // True if Param named param_name was deleted successfully.
+    bool remove(const std::string param_name);
+
+    // Return true if there exists a parameter with that name, false otherwise.
+    bool exists(const std::string param_name) const;
 
     // Get/Set
     // Get param value by name. Return value as string.
-    std::string get_value_str(const std::string name) const;
+    std::string get_value_str(const std::string param_name) const;
     // Get param value, specifying return type.
     template <typename T>
-    T get_value(const std::string name) const
+    T get_value(const std::string param_name) const
     {
         std::set<NOMAD::Param>::const_iterator it;
         for (it = m_params.begin(); it != m_params.end(); it++)
         {
-            if (name == it->get_name())
+            if (param_name == it->get_name())
             {
                 return it->get_value<T>();
             }
         }
-        std::string err = "Parameter is not defined: " + name;
+        std::string err = "Parameter is not defined: " + param_name;
         throw NOMAD::Exception(__FILE__,__LINE__,err);
         return T();
     }
 
     // Check if a parameter of that name exists.
-    bool is_defined(const std::string name) const;
+    bool is_defined(const std::string param_name) const;
 
     // Helpers for reader
     static bool is_parameter_category(const std::string s);

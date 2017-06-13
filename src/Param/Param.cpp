@@ -185,6 +185,25 @@ void NOMAD::Param::set_value(const int value)
     }
 }
 
+// Set value without verifying type. Input is a string.
+void NOMAD::Param::set_value_str (const std::string value)
+{
+    if (m_value_is_const)
+    {
+        throw NOMAD::Exception(__FILE__, __LINE__, "Param value is const and cannot be modified");
+    }
+    try
+    {
+        m_paramvalue.set_value_str(value);
+    }
+    catch (NOMAD::Exception &e)
+    {
+        std::cerr << "Could not set parameter " << this->get_name();
+        std::cerr << " to string value \"" << value << "\". Exception thrown: ";
+        std::cerr << e.what();
+        std::cerr << std::endl;
+    }
+}
 
 
 bool is_capletter(const char &c)

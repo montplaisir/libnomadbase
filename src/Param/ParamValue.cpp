@@ -117,6 +117,12 @@ bool NOMAD::ParamValue::is_type_supported(std::string type_string)
 }
 
 // Validate the parameter value
+bool NOMAD::ParamValue::is_valid(std::string type_string, std::string value_string)
+{
+    ParamValue t_paramvalue(type_string, value_string);
+    return t_paramvalue.is_valid();
+}
+
 bool NOMAD::ParamValue::is_valid() const
 {
     bool is_valid = false;
@@ -302,6 +308,12 @@ void NOMAD::ParamValue::set_value(const int value)
     std::stringstream ss;
     ss << value;
     m_value_str = ss.str();
+}
+
+void NOMAD::ParamValue::set_value_str(std::string value)
+{
+    // Warning: No check.
+    m_value_str = value;
 }
 
 

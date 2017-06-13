@@ -31,44 +31,123 @@ NOMAD::Parameters::Parameters()
 // Add the parameter.
 // If a parameter with this name already exists, set its value
 // to the input parameter's value.
-// VRM TODO: If the parameter already exists, check category and type.
-// If they mismatch with the input, return false. (to be detailed)
-bool NOMAD::Parameters::add(const NOMAD::Param &p)
+// If the parameter already exists, check category and type.
+// If they mismatch with the input, an exception is thrown.
+bool NOMAD::Parameters::add(const NOMAD::Param &param)
 {
     std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
-    ret = m_params.insert(p);
+    ret = m_params.insert(param);
     bool inserted = ret.second;
     if (!inserted)
     {
-        // We will change the value of the parameter by erasing it,
-        // and adding the new one.
+        // Parameter not inserted. A parameter with the same name
+        // already exists.
+        // We will erase it and add the new one.
         std::set<NOMAD::Param>::iterator it_oldparam = ret.first;
+        // Verify category and type are the same, or else, throw an exception.
+        if (it_oldparam->get_category() != param.get_category())
+        {
+            std::string err = "Category mismatch: New parameter " + param.get_name();
+            err += " with category " + param.get_category();
+            err += " already exists with different category " + it_oldparam->get_category();
+            throw NOMAD::Exception(__FILE__, __LINE__, err );
+        }
+        if (it_oldparam->get_type_str() != param.get_type_str())
+        {
+            std::string err = "Category mismatch: New parameter " + param.get_name();
+            err += " with type " + param.get_type_str();
+            err += " already exists with different type " + it_oldparam->get_type_str();
+            throw NOMAD::Exception(__FILE__, __LINE__, err );
+        }
         m_params.erase(it_oldparam);
-        ret = m_params.insert(p);
+        ret = m_params.insert(param);
         inserted = ret.second;
     }
     return inserted;
 }
 
-bool NOMAD::Parameters::update(NOMAD::Param &p, const std::string value_string)
+// Return value:
+// 1 - Parameter found and updated
+// 0 - Parameter found but not updated
+// -1 - Parameter not found.
+int NOMAD::Parameters::update(const std::string param_name, const std::string value_string)
 {
-    // A parameter with this name, type, and category already exists.
-    // Update its value.
-    //
-    if (!p.value_is_const())
+    int ret_value = -1;
+
+    // VRM current implementation is not optimal.
+    // There is redundancy in search, plus search itself could use std functions.
+    // Look into using a map for m_params, instead of a set.
+    if (exists(param_name))
     {
-        std::cout << "VRM: update " << p.get_name() << " to (" << p.get_type_str() << ") " << value_string << std::endl;
-        p.set_value(value_string);
-        std::cout << "VRM: update " << p.get_name() << ", value is now " << p.get_value_str() << std::endl;
-        return true;
-    }
-    else
-    {
-        std::cerr << "Could not update this parameter value because it is const: " << p.get_name() << std::endl;
+        std::set<NOMAD::Param>::iterator it;
+
+/*
+        for (it = m_params.begin(); it != m_params.end(); it++)
+        {
+            if (param_name == it->get_name())
+            {
+                if (it->value_is_const())
+                {
+                    ret_value = 0;
+                    std::cerr << "Could not update this parameter value because it is const: " << param_name << std::endl;
+                }
+                else
+                {
+                    try
+                    {
+                        it->set_value_str(value_string);
+                        ret_value = 1;
+                    }
+                    catch
+                    {
+                        // Problem when updating value, do not update.
+                        ret_value = 0;
+                    }
+                }
+            }
+        }
+        */
     }
 
-    return false;
+    return ret_value;
 }
+
+bool NOMAD::Parameters::remove(const std::string param_name)
+{
+    bool param_removed = false;
+    if (!exists(param_name))
+    {
+        std::string err = "There is no parameter " + param_name + " to remove.";
+        std::cerr << err << std::endl;
+    }
+    std::set<NOMAD::Param>::iterator it;
+    for (it = m_params.begin(); it != m_params.end(); it++)
+    {
+        if (param_name == it->get_name())
+        {
+            m_params.erase(it);
+            param_removed = true;
+        }
+    }
+    return param_removed;
+}
+
+bool NOMAD::Parameters::exists(const std::string param_name) const
+{
+    std::set<NOMAD::Param>::const_iterator it;
+
+    for (it = m_params.begin(); it != m_params.end(); it++)
+    {
+        if (param_name == it->get_name())
+        {
+            break;
+        }
+    }
+    const bool found = (it != m_params.end());
+
+    return found;
+}
+
 
 std::string NOMAD::Parameters::get_value_str(const std::string name) const
 {
@@ -81,18 +160,6 @@ std::string NOMAD::Parameters::get_value_str(const std::string name) const
         ret_str = (*it).get_value_str();
     }
     return ret_str;
-}
-
-bool NOMAD::Parameters::find(const std::string name, NOMAD::Param &foundparam) const
-{
-    const NOMAD::Param t_param(name, NOMAD::ParamValue(true));
-    std::set<NOMAD::Param>::const_iterator it = m_params.find(t_param);
-    const bool found = (it != m_params.end());
-    if (found)
-    {
-        foundparam = (*it);
-    }
-    return found;
 }
 
 bool NOMAD::Parameters::is_defined(const std::string name) const
@@ -192,17 +259,17 @@ void NOMAD::Parameters::parse_line(std::string line)
         std::string first_field = line.substr(0, split_index);
         std::string category;
         std::string type_string;    // String representing the type, ex. "NOMAD::Double".
-        std::string name;
+        std::string param_name;
         std::string value_string;   // String representing the value, ex. "2.345".
         if (is_parameter_category(first_field) && !is_runner_param(line))
         {
             // First field of the line identified as param category
-            if (!parse_param_4fields(line, category, type_string, name, value_string))
+            if (!parse_param_4fields(line, category, type_string, param_name, value_string))
             {
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
             bool value_is_const = ("PROBLEM" == category);
-            NOMAD::Param param(name, value_string, type_string, category, value_is_const);
+            NOMAD::Param param(param_name, value_string, type_string, category, value_is_const);
 
             if (!this->add(param))
             {
@@ -214,25 +281,21 @@ void NOMAD::Parameters::parse_line(std::string line)
         {
             // First field of the line not identified as param category.
             // Assume it is a parameter name.
-            if (!parse_param_2fields(line, name, value_string))
+            if (!parse_param_2fields(line, param_name, value_string))
             {
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
-            // This parameter should already exist. Update it.
-            NOMAD::Param param(name, value_string);
-            if (this->find(name, param))
-            {
-                this->update(param, value_string);
-            }
-            else
+            // Update this parameter if it already exists.
+            // Otherwise, create an USER parameter.
+            if (this->update(param_name, value_string) < 0)
             {
                 std::string def_category = "USER";
                 std::string def_type = "std::string";
-                std::cout << "Parameter " << name << " does not have a default value. ";
+                std::cout << "Parameter " << param_name << " does not have a default value. ";
                 std::cout << "Adding it with category = " << def_category << ", ";
                 std::cout << "type = " << def_type << ", ";
                 std::cout << "value = \"" << value_string << "\"" << std::endl;
-                NOMAD::Param user_param(name, value_string, def_type, def_category, false);
+                NOMAD::Param user_param(param_name, value_string, def_type, def_category, false);
                 this->add(user_param);
             }
         }

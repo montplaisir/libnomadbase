@@ -43,6 +43,9 @@ public:
 
     static bool is_type_supported(std::string type_string);
 
+    // Is this value valid for this type?
+    static bool is_valid(std::string type_string, std::string value_string);
+    // Is this ParamValue valid?
     bool is_valid() const;
 
     // Get/Set
@@ -60,6 +63,8 @@ public:
     void set_value(const int value);
     void set_value(const std::string value);
     void set_value(const char* value);
+    // Set value without verifying type. Input is a string.
+    void set_value_str (const std::string value);
 
     // operator<<
     friend std::ostream& operator<<(std::ostream& stream, const NOMAD::ParamValue& v)

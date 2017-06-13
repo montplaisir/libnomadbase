@@ -65,6 +65,8 @@ public:
     void            set_value (const double value);
     void            set_value (const bool value);
     void            set_value (const int value);
+    // Set value without verifying type. Input is a string.
+    void            set_value_str (const std::string value);
 
     // Get/Set value_is_const
     bool value_is_const() const { return m_value_is_const; }
