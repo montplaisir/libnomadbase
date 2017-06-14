@@ -28,7 +28,7 @@ public:
 
     // Update parameter value with new value.
     // Return value:
-    // 1 if parameter was update.
+    // 1 if parameter was updated.
     // 0 if parameter was found, but could not be updated.
     // -1 if parameter was not found.
     // if parameter was updated, false if it
@@ -39,7 +39,7 @@ public:
     // True if Param named param_name was deleted successfully.
     bool remove(const std::string param_name);
 
-    // Return true if there exists a parameter with that name, false otherwise.
+    // Return true if a parameter with that name exists, false otherwise.
     bool exists(const std::string param_name) const;
 
     // Get/Set
@@ -61,9 +61,6 @@ public:
         throw NOMAD::Exception(__FILE__,__LINE__,err);
         return T();
     }
-
-    // Check if a parameter of that name exists.
-    bool is_defined(const std::string param_name) const;
 
     // Helpers for reader
     static bool is_parameter_category(const std::string s);
