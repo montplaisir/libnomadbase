@@ -310,7 +310,7 @@ void NOMAD::ParamValue::set_value(const int value)
     m_value_str = ss.str();
 }
 
-void NOMAD::ParamValue::set_value_str(std::string value)
+void NOMAD::ParamValue::set_value_str(const std::string value)
 {
     // Warning: No check.
     m_value_str = value;
