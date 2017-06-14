@@ -2,7 +2,7 @@
 # Default values for Runner parameters.  \n\
 #  \n\
 # Category: ALGO / PROBLEM / RUNNER  \n\
-# Type: int / NOMAD::Double / std::string / bool / etc. See typedef ValueVariant in ParamValue.hpp.  \n\
+# Type: int / NOMAD::Double / std::string / bool / etc. See ParamValue.hpp.  \n\
 # Name: will be converted to caps internally.  \n\
 # Value: If no value provided, default constructor value is used  \n\
   \n\
