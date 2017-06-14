@@ -77,16 +77,16 @@ TEST(ParametersTest, Basic) {
     EXPECT_EQ(true, file_is_readable);
 
     // Read parameters from the runner parameters file
-    std::cout << "Read file " << full3 << std::endl;
+    std::cout << "VRM: Read file " << full3 << std::endl;
     all_parameters.read_from_file(full3);
+    std::cout << "VRM: File read: " << full3 << std::endl;
 
     // Verify value of PARAM1. Should be "1".
     std::string param_name = "PARAM1";
-    NOMAD::Param tp1(param_name, std::string());
-    bool param1_found = all_parameters.find(param_name, tp1);
+    bool param1_found = all_parameters.exists(param_name);
     EXPECT_EQ(true, param1_found);
-    std::string tp1_s = tp1.get_value_str();
-    EXPECT_EQ("1", tp1_s);
+    std::string param1_s = all_parameters.get_value_str(param_name);
+    EXPECT_EQ("1", param1_s);
 
     // Read parameters from the new file, they will be updated.
     std::string new_params_file = "mads_test1.txt";
@@ -97,13 +97,35 @@ TEST(ParametersTest, Basic) {
     all_parameters.read_from_file(full_new);
 
     // Value of PARAM1 should now be "100.100".
-    NOMAD::Param tp2(param_name, std::string());
-    param1_found = all_parameters.find(param_name, tp2);
+    param1_found = all_parameters.exists(param_name);
     EXPECT_EQ(true, param1_found);
-    std::string tp2_s = all_parameters.get_value_str(param_name);
-    EXPECT_EQ("100.100", tp2_s);        // VRM OUIN! CA MARCHE PAS
+    std::string param2_s = all_parameters.get_value_str(param_name);
+    EXPECT_EQ("100.100", param2_s);        // VRM OUIN! CA MARCHE PAS
 
-/*
+    // Remove parameter
+    bool b1 = all_parameters.remove(param_name);
+    EXPECT_EQ(true, b1);
+    param1_found = all_parameters.exists(param_name);
+    EXPECT_EQ(false, param1_found);
+
+    // Verify parameter "Second_Parameter" is found even if it
+    // was entered as "second_parameter" and is stored as "SECOND_PARAMETER".
+    bool param2_found = all_parameters.exists("Second_Parameter");
+    EXPECT_EQ(true, param2_found);
+
+    // Test update.
+    // Ensure parameters that are set as const cannot be modified,
+    // and that other parameters can be updated.
+    // Should work because DISPLAY_DEGREE is an ALGO parameter.
+    int i_updated1 = all_parameters.update("DISPLAY_DEGREE", "42");
+    EXPECT_EQ(1, i_updated1);
+    // Should not work because DIMENSION is a PROBLEM parameter.
+    int i_updated2 = all_parameters.update("DIMENSION", "42");
+    EXPECT_EQ(0, i_updated2);
+    // Should not work because DIDI is not defined.
+    int i_updated3 = all_parameters.update("DIDI", "42");
+    EXPECT_EQ(-1, i_updated3);
+
     // Output parameters to a file
     std::cout << std::endl << std::endl;
     try
@@ -112,9 +134,8 @@ TEST(ParametersTest, Basic) {
     }
     catch ( std::exception & e )
     {
-        cerr << "Exception thrown: " << e.what() << std::endl;
+        std::cerr << "Exception thrown: " << e.what() << std::endl;
     }
-    */
 
 
 }
