@@ -6,7 +6,6 @@
  \see    Double.hpp
  */
 #include "Math/Double.hpp"
-#include <boost/lexical_cast.hpp>
 
 /*-----------------------------------*/
 /*   static members initialization   */
