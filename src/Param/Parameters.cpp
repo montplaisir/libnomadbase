@@ -72,47 +72,42 @@ bool NOMAD::Parameters::add(const NOMAD::Param &param)
 // -1 - Parameter not found.
 int NOMAD::Parameters::update(const std::string param_name, const std::string value_string)
 {
-    // Work with caps
-    std::string param_name_caps = param_name;
-    NOMAD::toupper(param_name_caps);
-
     int ret_value = -1;
 
     // VRM current implementation is not optimal.
     // There is redundancy in search, plus search itself could use std functions.
-    if (is_defined(param_name_caps))
+    if (is_defined(param_name))
     {
-        std::set<NOMAD::Param>::iterator it;
-
-        for (it = m_params.begin(); it != m_params.end(); it++)
+        Param param(param_name, value_string);
+        if (!this->find(param_name, param))
         {
-            if (it->get_name() == param_name_caps)
+            std::string err = "Parameter could not be found: " + param_name;
+            throw NOMAD::Exception(__FILE__, __LINE__, err);
+        }
+
+        if (param.value_is_const())
+        {
+            ret_value = 0;
+            std::cerr << "Could not update this parameter value because it is const: " << param_name << std::endl;
+        }
+        else
+        {
+            try
             {
-                if (it->value_is_const())
-                {
-                    ret_value = 0;
-                    std::cerr << "Could not update this parameter value because it is const: " << param_name << std::endl;
-                }
-                else
-                {
-                    try
-                    {
-                        // Create a new Param based on the found param, but
-                        // using the new value.
-                        Param newparam = (*it);
-                        newparam.set_value_str(value_string);
-                        // Remove the current param and add the new one.
-                        m_params.erase(it);
-                        std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
-                        ret = m_params.insert(newparam);
-                        ret_value = ret.second;
-                    }
-                    catch (NOMAD::Exception &e)
-                    {
-                        // Problem when updating value, do not update.
-                        ret_value = 0;
-                    }
-                }
+                // Create a new Param based on the found param, but
+                // using the new value.
+                Param newparam = param;
+                newparam.set_value_str(value_string);
+                // Remove the current param and add the new one.
+                m_params.erase(param);
+                std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
+                ret = m_params.insert(newparam);
+                ret_value = ret.second;
+            }
+            catch (NOMAD::Exception &e)
+            {
+                // Problem when updating value, do not update.
+                ret_value = 0;
             }
         }
     }
@@ -122,11 +117,12 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
 
 bool NOMAD::Parameters::remove(const std::string param_name)
 {
+    bool param_removed = false;
+
     // Work with caps
     std::string param_name_caps = param_name;
     NOMAD::toupper(param_name_caps);
 
-    bool param_removed = false;
     if (!is_defined(param_name_caps))
     {
         std::string err = "There is no parameter " + param_name + " to remove.";
@@ -152,22 +148,11 @@ bool NOMAD::Parameters::remove(const std::string param_name)
     return param_removed;
 }
 
+
 bool NOMAD::Parameters::is_defined(const std::string param_name) const
 {
-    // Work with caps
-    std::string param_name_caps = param_name;
-    NOMAD::toupper(param_name_caps);
-
-    std::set<NOMAD::Param>::const_iterator it;
-
-    for (it = m_params.begin(); it != m_params.end(); it++)
-    {
-        if (it->get_name() == param_name_caps)
-        {
-            break;
-        }
-    }
-    const bool found = (it != m_params.end());
+    Param param(param_name, param_name); // unused
+    bool found = this->find(param_name, param);
 
     return found;
 }
@@ -175,22 +160,86 @@ bool NOMAD::Parameters::is_defined(const std::string param_name) const
 
 std::string NOMAD::Parameters::get_value_str(const std::string param_name) const
 {
+    Param param(param_name, param_name);
+    if (!this->find(param_name, param))
+    {   
+        std::string err = "Parameter is not defined: " + param_name;
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
+    return param.get_value_str();
+}
+
+NOMAD::Double NOMAD::Parameters::get_value_double(const std::string param_name) const
+{
+    std::string s = "0.0";
+    Param param(param_name, s, "NOMAD::Double");
+    if (!this->find(param_name, param))
+    {   
+        std::string err = "Parameter is not defined: " + param_name;
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
+    return param.get_value_double();
+}
+
+bool NOMAD::Parameters::get_value_bool(const std::string param_name) const
+{
+    std::string s = "false";
+    Param param(param_name, s, "bool");
+    if (!this->find(param_name, param))
+    {   
+        std::string err = "Parameter is not defined: " + param_name;
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
+    return param.get_value_bool();
+}
+
+int NOMAD::Parameters::get_value_int(const std::string param_name) const
+{
+    std::string s = "0";
+    Param param(param_name, s, "int");
+    if (!this->find(param_name, param))
+    {   
+        std::string err = "Parameter is not defined: " + param_name;
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
+    return param.get_value_int();
+}
+
+std::string NOMAD::Parameters::get_type_str(const std::string param_name) const
+{
+    Param param(param_name, param_name);
+    if (!this->find(param_name, param))
+    {   
+        std::string err = "Parameter is not defined: " + param_name;
+        throw NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
+    return param.get_type_str();
+}
+
+bool NOMAD::Parameters::find(const std::string param_name, Param &param) const
+{
     // Work with caps
     std::string param_name_caps = param_name;
     NOMAD::toupper(param_name_caps);
 
     std::set<NOMAD::Param>::const_iterator it;
-    std::string ret_str;
+    bool found = false;
 
     for (it = m_params.begin(); it != m_params.end(); it++)
     {
         if (it->get_name() == param_name_caps)
         {
-            ret_str = it->get_value_str();
+            param = *it;
+            found = true;
         }
     }
 
-    return ret_str;
+    return found;
 }
 
 bool NOMAD::Parameters::is_parameter_category(const std::string s)

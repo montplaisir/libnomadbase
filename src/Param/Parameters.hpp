@@ -43,24 +43,15 @@ public:
     bool is_defined(const std::string param_name) const;
 
     // Get/Set
-    // Get param value by name. Return value as string.
-    std::string get_value_str(const std::string param_name) const;
-    // Get param value, specifying return type.
-    template <typename T>
-    T get_value(const std::string param_name) const
-    {
-        std::set<NOMAD::Param>::const_iterator it;
-        for (it = m_params.begin(); it != m_params.end(); it++)
-        {
-            if (param_name == it->get_name())
-            {
-                return it->get_value<T>();
-            }
-        }
-        std::string err = "Parameter is not defined: " + param_name;
-        throw NOMAD::Exception(__FILE__,__LINE__,err);
-        return T();
-    }
+    // Get param value for all supported value types
+    std::string     get_value_str   (const std::string param_name)  const;
+    NOMAD::Double   get_value_double(const std::string param_name)  const;
+    bool            get_value_bool  (const std::string param_name)  const;
+    int             get_value_int   (const std::string param_name)  const;
+    std::string     get_type_str    (const std::string param_name)  const;
+
+    // Find parameter with this name
+    bool find(const std::string param_name, Param &param) const;
 
     // Helpers for reader
     static bool is_parameter_category(const std::string s);
