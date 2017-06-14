@@ -53,7 +53,7 @@ ALGO int            USER_PARAM                  0  \n\
 #NB. DISPLAY_DEGREE is an enum and can be specified either as string or int.  \n\
 #string case is ignored for now.  \n\
 PROBLEM int     DIMENSION       -1  \n\
-PROBLEM int     DISPLAY_DEGREE  2  \n\
+ALGO    int     DISPLAY_DEGREE  2  \n\
 PROBLEM std::list<std::string>  DISPLAY_STATS       #VRM un autre pas evident  \n\
 PROBLEM std::string     TMP_DIR  \n\
 PROBLEM std::string     BB_EXE  \n\
