@@ -26,7 +26,7 @@ private:
 
 public:
     // Constructor from strings
-    Param(std::string name,
+    Param(std::string param_name,
           std::string value_string,         // String representing parameter value
           std::string type_string,          // String representing parameter type
                                             // Could be "std::string", "NOMAD::Double", etc.
@@ -34,7 +34,7 @@ public:
           bool value_is_const = false);
 
     // Constructor with ParamValue
-    Param(std::string name,
+    Param(std::string param_name,
           ParamValue paramvalue,
           std::string category = "USER",
           bool value_is_const = false);
@@ -46,7 +46,7 @@ public:
 
     // Name - Setting name has some validation.
     std::string get_name() const;
-    void set_name(const std::string name);
+    void set_name(const std::string param_name);
 
     // Get Category
     std::string         get_category()          const { return m_category; }
@@ -74,7 +74,7 @@ public:
 
 
     // Validate the string as a parameter name
-    static bool name_is_valid(const std::string &name);
+    static bool name_is_valid(const std::string &param_name);
 
     // Comparison operator for insertion in set
     bool operator< (const NOMAD::Param &p) const;

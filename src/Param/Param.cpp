@@ -4,12 +4,12 @@
 using namespace std;
 
 // Constructor with strings
-NOMAD::Param::Param(std::string name,
+NOMAD::Param::Param(std::string param_name,
              std::string value_string,
              std::string type_string,
              std::string category,
              bool value_is_const)
-  : m_name(name),
+  : m_name(param_name),
     m_paramvalue(type_string, value_string),
     m_category(category),
     m_value_is_const(value_is_const)
@@ -18,11 +18,11 @@ NOMAD::Param::Param(std::string name,
 }
     
 // Constructor with ParamValue
-NOMAD::Param::Param(std::string name,
+NOMAD::Param::Param(std::string param_name,
              ParamValue paramvalue,
              std::string category,
              bool value_is_const)
-  : m_name(name),
+  : m_name(param_name),
     m_paramvalue(paramvalue),
     m_category(category),
     m_value_is_const(value_is_const)
@@ -53,13 +53,13 @@ std::string NOMAD::Param::get_name() const
     return m_name;
 }
 
-void NOMAD::Param::set_name(const std::string name)
+void NOMAD::Param::set_name(const std::string param_name)
 {
-    if (!name_is_valid(name))
+    if (!name_is_valid(param_name))
     {
         throw NOMAD::Exception(__FILE__, __LINE__, "Param name is not valid");
     }
-    m_name = name;
+    m_name = param_name;
 }
 
 
@@ -234,7 +234,7 @@ bool is_underscore(const char &c)
 }
 
 // Validate the string as a parameter name
-bool NOMAD::Param::name_is_valid(const std::string &name)
+bool NOMAD::Param::name_is_valid(const std::string &param_name)
 {
     // Param name should be of the form:
     // Capital letter, followed by a combination of capital letters, numbers
@@ -242,23 +242,23 @@ bool NOMAD::Param::name_is_valid(const std::string &name)
 
     // Note: std::regex is C++11 only, so it won't be used here.
 
-    int last_i = name.length()-1;
-    if (!is_capletter(name[0]))
+    int last_i = param_name.length()-1;
+    if (!is_capletter(param_name[0]))
     {
-        cerr << "Name is invalid: first character '" << name[0] << "' is not a capletter." << endl;
+        cerr << "Name is invalid: first character '" << param_name[0] << "' is not a capletter." << endl;
         return false;
     }
     for (int i = 1; i < last_i; i++) 
     {
-        if (!is_capletter(name[i]) && !is_number(name[i]) && !is_underscore(name[i]))
+        if (!is_capletter(param_name[i]) && !is_number(param_name[i]) && !is_underscore(param_name[i]))
         {
-            cerr << "Name is invalid: character '" << name[i] << "' is not a capletter, number, or underscore." << endl;
+            cerr << "Name is invalid: character '" << param_name[i] << "' is not a capletter, number, or underscore." << endl;
             return false;
         }
     }
-    if (!is_capletter(name[last_i]) && !is_number(name[last_i]))
+    if (!is_capletter(param_name[last_i]) && !is_number(param_name[last_i]))
     {
-        cerr << "Name is invalid: last character = '" << name[last_i] << "' is not a capletter or number." << endl;
+        cerr << "Name is invalid: last character = '" << param_name[last_i] << "' is not a capletter or number." << endl;
         return false;
     }
     return true;
