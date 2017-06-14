@@ -6,6 +6,8 @@ NOMAD 3.8.Dev
 version 3.8.Dev, Mads default
 
 max_bb_eval -1
+DISPLAY_DEGREE 3
+DIMENSION 10
 x0 -
 VNS_search 0 -
 LH_search -1 -1 1
