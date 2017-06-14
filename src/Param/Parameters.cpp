@@ -76,12 +76,10 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
 
     // VRM current implementation is not optimal.
     // There is redundancy in search, plus search itself could use std functions.
-    // Look into using a map for m_params, instead of a set.
     if (exists(param_name))
     {
         std::set<NOMAD::Param>::iterator it;
 
-/*
         for (it = m_params.begin(); it != m_params.end(); it++)
         {
             if (param_name == it->get_name())
@@ -95,10 +93,17 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
                 {
                     try
                     {
-                        it->set_value_str(value_string);
-                        ret_value = 1;
+                        // Create a new Param based on the found param, but
+                        // using the new value.
+                        Param newparam = (*it);
+                        newparam.set_value_str(value_string);
+                        // Remove the current param and add the new one.
+                        m_params.erase(it);
+                        std::pair<std::set<NOMAD::Param>::iterator,bool> ret;
+                        ret = m_params.insert(newparam);
+                        ret_value = ret.second;
                     }
-                    catch
+                    catch (NOMAD::Exception &e)
                     {
                         // Problem when updating value, do not update.
                         ret_value = 0;
@@ -106,7 +111,6 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
                 }
             }
         }
-        */
     }
 
     return ret_value;
@@ -285,6 +289,8 @@ void NOMAD::Parameters::parse_line(std::string line)
             {
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
+            NOMAD::toupper(param_name);
+
             // Update this parameter if it already exists.
             // Otherwise, create an USER parameter.
             if (this->update(param_name, value_string) < 0)

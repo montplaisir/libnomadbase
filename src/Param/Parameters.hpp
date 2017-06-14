@@ -71,10 +71,10 @@ public:
 
     static bool parse_param_4fields(const std::string line,
             std::string &category, std::string &type_string, 
-            std::string &name, std::string &value_string);
+            std::string &param_name, std::string &value_string);
 
     static bool parse_param_2fields(const std::string line,
-            std::string &name, std::string &value_string);
+            std::string &param_name, std::string &value_string);
 
     // Parse line and add parameter. Yes, this should be 2 methods.
     void parse_line(std::string line);
