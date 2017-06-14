@@ -100,7 +100,7 @@ TEST(ParametersTest, Basic) {
     param1_found = all_parameters.is_defined(param_name);
     EXPECT_EQ(true, param1_found);
     std::string param2_s = all_parameters.get_value_str(param_name);
-    EXPECT_EQ("100.100", param2_s);        // VRM OUIN! CA MARCHE PAS
+    EXPECT_EQ("100.100", param2_s);
 
     // Remove parameter
     bool b1 = all_parameters.remove(param_name);
@@ -125,6 +125,36 @@ TEST(ParametersTest, Basic) {
     // Should not work because DIDI is not defined.
     int i_updated3 = all_parameters.update("DIDI", "42");
     EXPECT_EQ(-1, i_updated3);
+
+    // Test getting values and types
+    std::string s10 = all_parameters.get_value_str("SECOND_PARAMETER");
+    std::string t_s10 = all_parameters.get_type_str("SECOND_PARAMETER");
+    EXPECT_EQ("string value", s10);
+    EXPECT_EQ("std::string", t_s10);
+
+    NOMAD::Double d10 = all_parameters.get_value_double("MESH_UPDATE_BASIS");
+    std::string t_d10 = all_parameters.get_type_str("MESH_UPDATE_BASIS");
+    EXPECT_EQ(4, d10);
+    EXPECT_EQ("NOMAD::Double", t_d10);
+
+    bool b10 = all_parameters.get_value_bool("MODEL_PROJ_TO_MESH");
+    std::string t_b10 = all_parameters.get_type_str("MODEL_PROJ_TO_MESH");
+    EXPECT_EQ(true,b10);
+    EXPECT_EQ("bool", t_b10);
+
+    int i10 = all_parameters.get_value_int("USER_PARAM");
+    std::string t_i10 = all_parameters.get_type_str("USER_PARAM");
+    EXPECT_EQ(42,i10);
+    EXPECT_EQ("int", t_i10);
+
+    // Test find
+    std::string param_name11 = "MODEL_MAX_Y_SIZE";
+    int i11 = 55;   // bogus value only for param creation
+    NOMAD::Param param(param_name11, i11);
+    bool b11_found = all_parameters.find(param_name11, param);
+    EXPECT_EQ(true, b11_found);
+    int i11_val = param.get_value_int();
+    EXPECT_EQ(500, i11_val);
 
     // Output parameters to a file
     std::cout << std::endl << std::endl;
