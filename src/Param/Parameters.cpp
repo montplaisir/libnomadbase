@@ -286,6 +286,9 @@ void NOMAD::Parameters::parse_line(std::string line)
             {
                 std::cerr << "Could not parse this line: " << line << std::endl;
             }
+            // VRM to be modified.
+            // When reading default configuration file, and then reading a problem file,
+            // the value should be updatable.
             bool value_is_const = ("PROBLEM" == category);
             NOMAD::Param param(param_name, value_string, type_string, category, value_is_const);
 
