@@ -2,7 +2,7 @@
 # Default values for Runner parameters.  \n\
 #  \n\
 # Category: ALGO / PROBLEM / RUNNER  \n\
-# Type: int / NOMAD::Double / std::string / bool / etc. See typedef ValueVariant in ParamValue.hpp.  \n\
+# Type: int / NOMAD::Double / std::string / bool / etc. See ParamValue.hpp.  \n\
 # Name: will be converted to caps internally.  \n\
 # Value: If no value provided, default constructor value is used  \n\
   \n\
@@ -13,7 +13,8 @@ ALGO std::string    DESCRIPTION     COMMENTS HERE (max one line)  \n\
 ALGO bool           IS_RANDOM       false  \n\
 ALGO int            MAX_BB_EVAL     -1  \n\
 ALGO bool           TIMES_N         false  \n\
-ALGO NOMAD::Point   X0                          #if defined, replaces the default Problem::_x0  \n\
+ALGO std::string    X0                          # VRM this one can be either a file name  \n\
+                                                # (std::string) or a point (NOMAD::Point)  \n\
 ALGO bool           VNS_SEARCH      false  \n\
 ALGO NOMAD::Double  VNS_TRIGGER  \n\
 ALGO int[2]         LH_SEARCH       -1 -1       #VRM how will I treat that one?  \n\
@@ -49,15 +50,14 @@ ALGO bool           HAS_SGTE                    false  \n\
 ALGO int            USER_PARAM                  0  \n\
   \n\
 #VRM more problem parameters to add. This is a quick start for ARWHEAD to run.  \n\
+#NB. DISPLAY_DEGREE is an enum and can be specified either as string or int.  \n\
+#string case is ignored for now.  \n\
 PROBLEM int     DIMENSION       -1  \n\
-PROBLEM int     DISPLAY_DEGREE  NOMAD::NORMAL_DISPLAY  \n\
+ALGO    int     DISPLAY_DEGREE  2  \n\
 PROBLEM std::list<std::string>  DISPLAY_STATS       #VRM un autre pas evident  \n\
 PROBLEM std::string     TMP_DIR  \n\
-PROBLEM std::string     X0                          # VRM this one can be either a file name  \n\
-                                                    # (std::string) or a point (NOMAD::Point)  \n\
 PROBLEM std::string     BB_EXE  \n\
 PROBLEM std::vector<NOMAD::bb_output_type>      BB_OUTPUT_TYPE  \n\
-PROBLEM int             MAX_BB_EVAL     -1  \n\
   \n\
 # Runner parameters  \n\
 RUNNER std::string  DATE            # For info  \n\

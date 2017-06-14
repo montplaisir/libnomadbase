@@ -1,9 +1,21 @@
-Simplify interface. ParamValue is for internal use. 
-Consider not using variants, because it seems more confusing than useful.
-Instead, ParamValue could hold two strings: type and value.
+Make all internal members start with m_* instead of _*
 
-Connect this with Runner.
+Compile on Windows.
 
-Use namespace NOMAD on parameter classes
+Some complex types to think about: 
+X0 can be either a NOMAD::Point or a filename
+std::list<std::string> DISPLAY_STATS
+int[2] LH_SEARCH
+etc. This is one reason to use strings in ParamValue.
 
-Compile on Windows. Asses usage of boost.
+Format of the default parameters file:
+Maybe using a format like XML (or JSON, but XML seems better suited in this case), would
+help for the default parameter file. See TinyXML-2 as a library for parsing XML. It is
+lightweight, easy to use, and does the minimum, which is what we need.
+Format should include:
+Parameter description for help output (see NOMAD_3 - Parameters.cpp - help())
+If the parameter is basic / advanced / developer (ibidem)
+Is the value required or not.
+Such a format would potentially be easier to parse, in particular for parameter
+description. We would still have to determine how to write a parameter that can
+have multiple types.

@@ -36,8 +36,13 @@ INCLFLAGS			= -I$(INCLUDE_DIR)
 COMPILE             = g++ $(CXXFLAGS)
 
 
-all: $(OBJ_DIR)/Double.o $(OBJ_DIR)/LHS.o $(OBJ_DIR)/Point.o $(OBJ_DIR)/RNG.o \
-		$(OBJ_DIR)/Vector.o
+all: $(INCLUDE_DIR)/Math $(OBJ_DIR)/Double.o $(OBJ_DIR)/LHS.o \
+        $(OBJ_DIR)/Point.o $(OBJ_DIR)/RNG.o $(OBJ_DIR)/Vector.o
+
+$(INCLUDE_DIR)/Math: Double.hpp LHS.hpp Point.hpp RNG.hpp Vector.hpp 
+	@mkdir -p $@
+	@cp -f $^ $@
+
 
 $(OBJ_DIR)/%.o: %.cpp %.hpp
 	@mkdir -p $(INCLUDE_DIR)/$(MATH_DIRNAME)

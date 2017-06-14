@@ -7,6 +7,23 @@
  */
 #include "utils.hpp"
 
+/*----------------------------------------------------------------------*/
+/*         convert a string in {"YES","NO","Y","N"} to a bool           */
+/*         value of return: -1: error                                   */
+/*                           0: bool=false                              */
+/*                           1: bool=true                               */
+/*----------------------------------------------------------------------*/
+int NOMAD::string_to_bool ( const std::string & ss )
+{
+    std::string s = ss;
+    NOMAD::toupper ( s );
+    if ( s=="Y" || s=="YES" || s=="1" || s=="TRUE" )
+        return 1;
+    if ( s=="N" || s=="NO" || s=="0" || s=="FALSE" )
+        return 0;
+    return -1;
+}
+
 /*-----------------------------------------------------------------*/
 /*                         NOMAD::itos                             */
 /*-----------------------------------------------------------------*/
