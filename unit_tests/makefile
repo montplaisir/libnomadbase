@@ -46,10 +46,10 @@ INCLFLAGS = -I$(INCLUDE_DIR)
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-#TESTS = double_unittest point_unittest vector_unittest lhs_unittest \
-#        parameters_unittest param_unittest paramvalue_unittest
+TESTS = double_unittest point_unittest vector_unittest lhs_unittest \
+        parameters_unittest param_unittest paramvalue_unittest
 # VRM for testing one or two tests at a time, when debugging.
-TESTS = parameters_unittest
+#TESTS = parameters_unittest
 TESTS := $(addprefix $(BIN_TEST_DIR)/,$(TESTS))
 
 # All Google Test headers.  Usually you shouldn't change this
@@ -148,8 +148,7 @@ $(BIN_TEST_DIR)/% : $(OBJ_TEST_DIR)/%.o \
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
 
 run: $(TESTS)
-	#$(UNIT_TESTS_DIR)/run_tests.sh $(BIN_TEST_DIR)
-	$(BIN_TEST_DIR)/parameters_unittest
+	$(UNIT_TESTS_DIR)/run_tests.sh $(BIN_TEST_DIR)
 
 
 

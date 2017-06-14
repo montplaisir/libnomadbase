@@ -83,7 +83,7 @@ TEST(ParametersTest, Basic) {
 
     // Verify value of PARAM1. Should be "1".
     std::string param_name = "PARAM1";
-    bool param1_found = all_parameters.exists(param_name);
+    bool param1_found = all_parameters.is_defined(param_name);
     EXPECT_EQ(true, param1_found);
     std::string param1_s = all_parameters.get_value_str(param_name);
     EXPECT_EQ("1", param1_s);
@@ -97,7 +97,7 @@ TEST(ParametersTest, Basic) {
     all_parameters.read_from_file(full_new);
 
     // Value of PARAM1 should now be "100.100".
-    param1_found = all_parameters.exists(param_name);
+    param1_found = all_parameters.is_defined(param_name);
     EXPECT_EQ(true, param1_found);
     std::string param2_s = all_parameters.get_value_str(param_name);
     EXPECT_EQ("100.100", param2_s);        // VRM OUIN! CA MARCHE PAS
@@ -105,12 +105,12 @@ TEST(ParametersTest, Basic) {
     // Remove parameter
     bool b1 = all_parameters.remove(param_name);
     EXPECT_EQ(true, b1);
-    param1_found = all_parameters.exists(param_name);
+    param1_found = all_parameters.is_defined(param_name);
     EXPECT_EQ(false, param1_found);
 
     // Verify parameter "Second_Parameter" is found even if it
     // was entered as "second_parameter" and is stored as "SECOND_PARAMETER".
-    bool param2_found = all_parameters.exists("Second_Parameter");
+    bool param2_found = all_parameters.is_defined("Second_Parameter");
     EXPECT_EQ(true, param2_found);
 
     // Test update.

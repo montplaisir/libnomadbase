@@ -40,7 +40,7 @@ public:
     bool remove(const std::string param_name);
 
     // Return true if a parameter with that name exists, false otherwise.
-    bool exists(const std::string param_name) const;
+    bool is_defined(const std::string param_name) const;
 
     // Get/Set
     // Get param value by name. Return value as string.

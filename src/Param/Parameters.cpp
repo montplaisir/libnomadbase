@@ -80,7 +80,7 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
 
     // VRM current implementation is not optimal.
     // There is redundancy in search, plus search itself could use std functions.
-    if (exists(param_name_caps))
+    if (is_defined(param_name_caps))
     {
         std::set<NOMAD::Param>::iterator it;
 
@@ -127,7 +127,7 @@ bool NOMAD::Parameters::remove(const std::string param_name)
     NOMAD::toupper(param_name_caps);
 
     bool param_removed = false;
-    if (!exists(param_name_caps))
+    if (!is_defined(param_name_caps))
     {
         std::string err = "There is no parameter " + param_name + " to remove.";
         std::cerr << err << std::endl;
@@ -152,7 +152,7 @@ bool NOMAD::Parameters::remove(const std::string param_name)
     return param_removed;
 }
 
-bool NOMAD::Parameters::exists(const std::string param_name) const
+bool NOMAD::Parameters::is_defined(const std::string param_name) const
 {
     // Work with caps
     std::string param_name_caps = param_name;
