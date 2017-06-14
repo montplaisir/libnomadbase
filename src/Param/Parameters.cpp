@@ -72,17 +72,21 @@ bool NOMAD::Parameters::add(const NOMAD::Param &param)
 // -1 - Parameter not found.
 int NOMAD::Parameters::update(const std::string param_name, const std::string value_string)
 {
+    // Work with caps
+    std::string param_name_caps = param_name;
+    NOMAD::toupper(param_name_caps);
+
     int ret_value = -1;
 
     // VRM current implementation is not optimal.
     // There is redundancy in search, plus search itself could use std functions.
-    if (exists(param_name))
+    if (exists(param_name_caps))
     {
         std::set<NOMAD::Param>::iterator it;
 
         for (it = m_params.begin(); it != m_params.end(); it++)
         {
-            if (param_name == it->get_name())
+            if (it->get_name() == param_name_caps)
             {
                 if (it->value_is_const())
                 {
@@ -118,8 +122,12 @@ int NOMAD::Parameters::update(const std::string param_name, const std::string va
 
 bool NOMAD::Parameters::remove(const std::string param_name)
 {
+    // Work with caps
+    std::string param_name_caps = param_name;
+    NOMAD::toupper(param_name_caps);
+
     bool param_removed = false;
-    if (!exists(param_name))
+    if (!exists(param_name_caps))
     {
         std::string err = "There is no parameter " + param_name + " to remove.";
         std::cerr << err << std::endl;
@@ -127,22 +135,34 @@ bool NOMAD::Parameters::remove(const std::string param_name)
     std::set<NOMAD::Param>::iterator it;
     for (it = m_params.begin(); it != m_params.end(); it++)
     {
-        if (param_name == it->get_name())
+        if (it->get_name() == param_name_caps)
         {
             m_params.erase(it);
             param_removed = true;
         }
     }
+
+    if (it == m_params.end())
+    {
+        // Sanity check. We should never get there.
+        std::string err = "Could not remove parameter " + param_name;
+        NOMAD::Exception(__FILE__, __LINE__, err);
+    }
+
     return param_removed;
 }
 
 bool NOMAD::Parameters::exists(const std::string param_name) const
 {
+    // Work with caps
+    std::string param_name_caps = param_name;
+    NOMAD::toupper(param_name_caps);
+
     std::set<NOMAD::Param>::const_iterator it;
 
     for (it = m_params.begin(); it != m_params.end(); it++)
     {
-        if (param_name == it->get_name())
+        if (it->get_name() == param_name_caps)
         {
             break;
         }
@@ -153,30 +173,24 @@ bool NOMAD::Parameters::exists(const std::string param_name) const
 }
 
 
-std::string NOMAD::Parameters::get_value_str(const std::string name) const
+std::string NOMAD::Parameters::get_value_str(const std::string param_name) const
 {
-    std::string ret_str;
-    const NOMAD::Param t_param(name, NOMAD::ParamValue(true));
-    std::set<NOMAD::Param>::const_iterator it = m_params.find(t_param);
-    const bool found = (it != m_params.end());
-    if (found)
-    {
-        ret_str = (*it).get_value_str();
-    }
-    return ret_str;
-}
+    // Work with caps
+    std::string param_name_caps = param_name;
+    NOMAD::toupper(param_name_caps);
 
-bool NOMAD::Parameters::is_defined(const std::string name) const
-{
     std::set<NOMAD::Param>::const_iterator it;
+    std::string ret_str;
+
     for (it = m_params.begin(); it != m_params.end(); it++)
     {
-        if (name == it->get_name())
+        if (it->get_name() == param_name_caps)
         {
-            return true;
+            ret_str = it->get_value_str();
         }
     }
-    return false;
+
+    return ret_str;
 }
 
 bool NOMAD::Parameters::is_parameter_category(const std::string s)
@@ -199,8 +213,8 @@ bool NOMAD::Parameters::is_runner_param(const std::string line)
     size_t next_split_index = line.find(' ', split_index+1);
     if (next_split_index != std::string::npos)
         return false;
-    std::string name = line.substr(0, split_index);
-    if ("RUNNER" != name)
+    std::string param_name = line.substr(0, split_index);
+    if ("RUNNER" != param_name)
         return false;
 
     return true;
@@ -208,7 +222,7 @@ bool NOMAD::Parameters::is_runner_param(const std::string line)
 
 bool NOMAD::Parameters::parse_param_4fields(const std::string line,
             std::string &category, std::string &type_string,
-            std::string &name, std::string &value_string)
+            std::string &param_name, std::string &value_string)
 {
     size_t split_index1 = line.find(' ');
     size_t split_index2 = line.find(' ', split_index1+1);
@@ -224,7 +238,7 @@ bool NOMAD::Parameters::parse_param_4fields(const std::string line,
 
     category        = line.substr(0, split_index1-0);
     type_string     = line.substr(split_index1+1, split_index2-split_index1-1);
-    name            = line.substr(split_index2+1, split_index3-split_index2-1);
+    param_name      = line.substr(split_index2+1, split_index3-split_index2-1);
     if (split_index3 != std::string::npos)
     {
         value_string    = line.substr(split_index3+1, line.size()-split_index3);
@@ -234,14 +248,14 @@ bool NOMAD::Parameters::parse_param_4fields(const std::string line,
 }
 
 bool NOMAD::Parameters::parse_param_2fields(const std::string line,
-            std::string &name, std::string &value_string)
+            std::string &param_name, std::string &value_string)
 {
     size_t split_index = line.find(' ');
     if (split_index == std::string::npos)
         return false;
 
     // Contrary to parse_param_4fields(), here value_string is mandatory.
-    name = line.substr(0, split_index-0);
+    param_name = line.substr(0, split_index-0);
     value_string = line.substr(split_index+1, line.size()-split_index);
 
     return true;
