@@ -23,4 +23,5 @@ all:
 
 clean:
 	cd $(SRC_DIR) && $(MAKE) clean TOP=$(TOP)
+	cd $(UNIT_TESTS_DIR) && $(MAKE) clean TOP=$(TOP)
 
