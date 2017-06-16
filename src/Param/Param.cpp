@@ -244,20 +244,26 @@ bool NOMAD::Param::name_is_valid(const std::string &param_name)
     int last_i = param_name.length()-1;
     if (!is_capletter(param_name[0]))
     {
+#ifdef DEBUG
         std::cerr << "Name is invalid: first character '" << param_name[0] << "' is not a capletter." << std::endl;
+#endif
         return false;
     }
     for (int i = 1; i < last_i; i++) 
     {
         if (!is_capletter(param_name[i]) && !is_number(param_name[i]) && !is_underscore(param_name[i]))
         {
+#ifdef DEBUG
             std::cerr << "Name is invalid: character '" << param_name[i] << "' is not a capletter, number, or underscore." << std::endl;
+#endif
             return false;
         }
     }
     if (!is_capletter(param_name[last_i]) && !is_number(param_name[last_i]))
     {
+#ifdef DEBUG
         std::cerr << "Name is invalid: last character = '" << param_name[last_i] << "' is not a capletter or number." << std::endl;
+#endif
         return false;
     }
     return true;
