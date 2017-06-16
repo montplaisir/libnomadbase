@@ -99,44 +99,47 @@ $(OBJ_TEST_DIR)/gtest_main.a : $(OBJ_TEST_DIR)/gtest-all.o $(OBJ_TEST_DIR)/gtest
 	mkdir -p $(OBJ_TEST_DIR)
 	$(AR) $(ARFLAGS) $@ $^
 
+# VRM Unit tests should depend on header files too, but since we copy
+# them to the include directory every time, the object files were
+# recompiled every time. For this reason the dependency was removed.
 $(OBJ_TEST_DIR)/double_unittest.o : $(UNIT_TESTS_DIR)/double_unittest.cpp \
-                     $(INCLUDE_DIR)/Math/Double.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/double_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/point_unittest.o : $(UNIT_TESTS_DIR)/point_unittest.cpp \
-                     $(INCLUDE_DIR)/Math/Point.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/point_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/vector_unittest.o : $(UNIT_TESTS_DIR)/vector_unittest.cpp \
-                     $(INCLUDE_DIR)/Math/Vector.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/vector_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/lhs_unittest.o : $(UNIT_TESTS_DIR)/lhs_unittest.cpp \
-                     $(INCLUDE_DIR)/Math/LHS.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/lhs_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/parameters_unittest.o : $(UNIT_TESTS_DIR)/parameters_unittest.cpp \
-                     $(INCLUDE_DIR)/Param/Parameters.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/parameters_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/param_unittest.o : $(UNIT_TESTS_DIR)/param_unittest.cpp \
-                     $(INCLUDE_DIR)/Param/Param.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/param_unittest.cpp \
             -o $@
 
 $(OBJ_TEST_DIR)/paramvalue_unittest.o : $(UNIT_TESTS_DIR)/paramvalue_unittest.cpp \
-                     $(INCLUDE_DIR)/Param/ParamValue.hpp $(GTEST_HEADERS)
+                     $(GTEST_HEADERS)
 	mkdir -p $(OBJ_TEST_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLFLAGS) -c $(UNIT_TESTS_DIR)/paramvalue_unittest.cpp \
             -o $@

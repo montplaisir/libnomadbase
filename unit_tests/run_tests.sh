@@ -10,7 +10,7 @@ fi
 
 BIN_TEST_DIR=$1
 
-tput setaf 3; echo; echo "Running Unit tests"
+tput setaf 3; echo; echo "Running libnomadbase Unit tests"
 for test in `ls $BIN_TEST_DIR | grep _unittest`
 do
     tput setaf 2; test_failed=`$BIN_TEST_DIR/$test | grep FAILED`
