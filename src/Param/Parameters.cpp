@@ -357,9 +357,24 @@ void NOMAD::Parameters::parse_line(std::string line)
             }
             NOMAD::toupper(param_name);
 
+            // For now, ignore invalid names, ex. in an id file the first line could be:
+            // "2017-06-16, 14:36:19, lambda.gerad.lan"
+            // but "2017-06-16," is an invalid parameter name.
+            if (!NOMAD::Param::name_is_valid(param_name))
+            {
+                return;
+            }
+
             // Update this parameter if it already exists.
             // Otherwise, create an USER parameter.
-            if (this->update(param_name, value_string) < 0)
+            if (this->is_defined(param_name))
+            {
+                if (this->update(param_name, value_string) <= 0)
+                {
+                    std::cerr << "Could not update parameter " << param_name << std::endl;
+                }
+            }
+            else
             {
                 std::string def_category = "USER";
                 std::string def_type = "std::string";
@@ -402,7 +417,6 @@ void NOMAD::Parameters::read_from_file(const std::string &filename)
         throw NOMAD::Exception(__FILE__, __LINE__, err);
     }
     err.clear();
-
 
     std::string line;
     while (fin.good() && !fin.eof())
