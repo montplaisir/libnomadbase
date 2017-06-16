@@ -54,7 +54,7 @@ TEST(ParamTest, Basic) {
     {
         // VRM this str checking is too specific, but we will leave it like this for now.
         // If it becomes too combersome, just skip it.
-        std::string expected = "NOMAD::Exception thrown (Param.cpp, 42) Param name \"" + name2 + "\" is not valid";
+        std::string expected = "NOMAD::Exception thrown (Param.cpp, 41) Param name \"" + name2 + "\" is not valid";
         EXPECT_EQ( expected, err.what() );
     }
 
@@ -70,7 +70,7 @@ TEST(ParamTest, Basic) {
     catch( const NOMAD::Exception& err )
     {
         // VRM this str checking is too specific, but we will leave it like this for now.
-        std::string expected = "NOMAD::Exception thrown (Param.cpp, 47) Param value \"" + value3 + "\" is not valid for type " + type3;
+        std::string expected = "NOMAD::Exception thrown (Param.cpp, 46) Param value \"" + value3 + "\" is not valid for type " + type3;
         EXPECT_EQ( expected, err.what() );
     }
 
@@ -102,7 +102,7 @@ TEST(ParamTest, Basic) {
     }
     catch (const NOMAD::Exception &err8)
     {
-        std::string expected8 = "NOMAD::Exception thrown (Param.cpp, 47) Param value \"" + value8 + "\" is not valid for type NOMAD::Double";
+        std::string expected8 = "NOMAD::Exception thrown (Param.cpp, 46) Param value \"" + value8 + "\" is not valid for type NOMAD::Double";
         EXPECT_EQ( expected8, err8.what() );
     }
 
@@ -118,7 +118,7 @@ TEST(ParamTest, Basic) {
     }
     catch ( const NOMAD::Exception& err )
     {
-        EXPECT_STREQ( "NOMAD::Exception thrown (Param.cpp, 132) Param value is const and cannot be modified", err.what() );
+        EXPECT_STREQ( "NOMAD::Exception thrown (Param.cpp, 131) Param value is const and cannot be modified", err.what() );
     }
     EXPECT_EQ(name9,  p9.get_name());
     EXPECT_EQ(value9, p9.get_value_double());

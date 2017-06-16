@@ -5,11 +5,9 @@
  \date   March 2017
  \see    Point.hpp
  */
-#include "Math/Point.hpp"
 
-// VRM temporary, should be included via other means
 #include <iomanip>
-using namespace std;
+#include "Math/Point.hpp"
 
 std::ostream& NOMAD::operator<<(std::ostream& out, const NOMAD::Point& point)
 {

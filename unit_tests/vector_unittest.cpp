@@ -7,9 +7,6 @@
 #include "Math/Vector.hpp"
 #include "gtest/gtest.h"
 
-//#include <iostream>
-//using namespace std;
-
 // Step 2. Use the TEST macro to define your tests.
 
 // Tests Vector class.

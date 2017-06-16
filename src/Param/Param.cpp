@@ -1,7 +1,6 @@
 
 #include "Param.hpp"
 #include <Util/utils.hpp>
-using namespace std;
 
 // Constructor with strings
 NOMAD::Param::Param(std::string param_name,
@@ -245,20 +244,20 @@ bool NOMAD::Param::name_is_valid(const std::string &param_name)
     int last_i = param_name.length()-1;
     if (!is_capletter(param_name[0]))
     {
-        cerr << "Name is invalid: first character '" << param_name[0] << "' is not a capletter." << endl;
+        std::cerr << "Name is invalid: first character '" << param_name[0] << "' is not a capletter." << std::endl;
         return false;
     }
     for (int i = 1; i < last_i; i++) 
     {
         if (!is_capletter(param_name[i]) && !is_number(param_name[i]) && !is_underscore(param_name[i]))
         {
-            cerr << "Name is invalid: character '" << param_name[i] << "' is not a capletter, number, or underscore." << endl;
+            std::cerr << "Name is invalid: character '" << param_name[i] << "' is not a capletter, number, or underscore." << std::endl;
             return false;
         }
     }
     if (!is_capletter(param_name[last_i]) && !is_number(param_name[last_i]))
     {
-        cerr << "Name is invalid: last character = '" << param_name[last_i] << "' is not a capletter or number." << endl;
+        std::cerr << "Name is invalid: last character = '" << param_name[last_i] << "' is not a capletter or number." << std::endl;
         return false;
     }
     return true;
