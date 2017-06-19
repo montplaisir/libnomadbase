@@ -301,11 +301,16 @@ bool NOMAD::Parameters::parse_param_2fields(const std::string line,
 {
     size_t split_index = line.find(' ');
     if (split_index == std::string::npos)
-        return false;
-
-    // Contrary to parse_param_4fields(), here value_string is mandatory.
-    param_name = line.substr(0, split_index-0);
-    value_string = line.substr(split_index+1, line.size()-split_index);
+    {
+        // Define a string parameter with an empty value.
+        param_name = line;
+        value_string = "";
+    }
+    else
+    {
+        param_name = line.substr(0, split_index-0);
+        value_string = line.substr(split_index+1, line.size()-split_index);
+    }
 
     return true;
 }

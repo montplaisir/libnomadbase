@@ -81,6 +81,18 @@ TEST(ParametersTest, Basic) {
     all_parameters.read_from_file(full3);
     std::cout << "VRM: File read: " << full3 << std::endl;
 
+    // Verify param ANY_PROBLEM is defined. There is no value for this parameter in the file.
+    std::string param_any = "ANY_PROBLEM";
+    bool param_any_defined = all_parameters.is_defined(param_any);
+    EXPECT_EQ(true, param_any_defined);
+    std::string param_any_value = all_parameters.get_value_str(param_any);
+    EXPECT_EQ("", param_any_value);
+
+    // Verify param NOT_PARAM is not defined
+    std::string param_not = "NOT_PARAM";
+    bool param_not_defined = all_parameters.is_defined(param_not);
+    EXPECT_EQ(false, param_not_defined);
+
     // Verify value of PARAM1. Should be "1".
     std::string param_name = "PARAM1";
     bool param1_found = all_parameters.is_defined(param_name);
