@@ -326,70 +326,69 @@ void NOMAD::Parameters::parse_line(std::string line)
     // Fields are delimited by single spaces.
     //
     size_t split_index = line.find(' ');
-    if (split_index != std::string::npos)
+    std::string first_field = line.substr(0, split_index);
+    std::string category;
+    std::string type_string;    // String representing the type, ex. "NOMAD::Double".
+    std::string param_name;
+    std::string value_string;   // String representing the value, ex. "2.345".
+    if (split_index != std::string::npos
+        && is_parameter_category(first_field)
+        && !is_runner_param(line))
     {
-        std::string first_field = line.substr(0, split_index);
-        std::string category;
-        std::string type_string;    // String representing the type, ex. "NOMAD::Double".
-        std::string param_name;
-        std::string value_string;   // String representing the value, ex. "2.345".
-        if (is_parameter_category(first_field) && !is_runner_param(line))
+        // First field of the line identified as param category
+        if (!parse_param_4fields(line, category, type_string, param_name, value_string))
         {
-            // First field of the line identified as param category
-            if (!parse_param_4fields(line, category, type_string, param_name, value_string))
-            {
-                std::cerr << "Could not parse this line: " << line << std::endl;
-            }
-            // VRM to be modified.
-            // When reading default configuration file, and then reading a problem file,
-            // the value should be updatable.
-            bool value_is_const = ("PROBLEM" == category);
-            NOMAD::Param param(param_name, value_string, type_string, category, value_is_const);
+            std::cerr << "Could not parse this line: " << line << std::endl;
+        }
+        // VRM to be modified.
+        // When reading default configuration file, and then reading a problem file,
+        // the value should be updatable.
+        bool value_is_const = ("PROBLEM" == category);
+        NOMAD::Param param(param_name, value_string, type_string, category, value_is_const);
 
-            if (!this->add(param))
+        if (!this->add(param))
+        {
+            std::cerr << "Could not add parameter " << param.get_name() << std::endl;
+            // VRM TODO add reasons
+        }
+    }
+    else
+        {
+        // First field of the line not identified as param category.
+        // Assume it is a parameter name.
+        if (!parse_param_2fields(line, param_name, value_string))
+        {
+            std::cerr << "Could not parse this line: " << line << std::endl;
+        }
+        NOMAD::toupper(param_name);
+
+        // For now, ignore invalid names, ex. in an id file the first line could be:
+        // "2017-06-16, 14:36:19, lambda.gerad.lan"
+        // but "2017-06-16," is an invalid parameter name.
+        if (!NOMAD::Param::name_is_valid(param_name))
+        {
+            return;
+        }
+
+        // Update this parameter if it already exists.
+        // Otherwise, create an USER parameter.
+        if (this->is_defined(param_name))
+        {
+            if (this->update(param_name, value_string) <= 0)
             {
-                std::cerr << "Could not add parameter " << param.get_name() << std::endl;
-                // VRM TODO add reasons
+                std::cerr << "Could not update parameter " << param_name << std::endl;
             }
         }
         else
         {
-            // First field of the line not identified as param category.
-            // Assume it is a parameter name.
-            if (!parse_param_2fields(line, param_name, value_string))
-            {
-                std::cerr << "Could not parse this line: " << line << std::endl;
-            }
-            NOMAD::toupper(param_name);
-
-            // For now, ignore invalid names, ex. in an id file the first line could be:
-            // "2017-06-16, 14:36:19, lambda.gerad.lan"
-            // but "2017-06-16," is an invalid parameter name.
-            if (!NOMAD::Param::name_is_valid(param_name))
-            {
-                return;
-            }
-
-            // Update this parameter if it already exists.
-            // Otherwise, create an USER parameter.
-            if (this->is_defined(param_name))
-            {
-                if (this->update(param_name, value_string) <= 0)
-                {
-                    std::cerr << "Could not update parameter " << param_name << std::endl;
-                }
-            }
-            else
-            {
-                std::string def_category = "USER";
-                std::string def_type = "std::string";
-                std::cout << "Parameter " << param_name << " does not have a default value. ";
-                std::cout << "Adding it with category = " << def_category << ", ";
-                std::cout << "type = " << def_type << ", ";
-                std::cout << "value = \"" << value_string << "\"" << std::endl;
-                NOMAD::Param user_param(param_name, value_string, def_type, def_category, false);
-                this->add(user_param);
-            }
+            std::string def_category = "USER";
+            std::string def_type = "std::string";
+            std::cout << "Parameter " << param_name << " does not have a default value. ";
+            std::cout << "Adding it with category = " << def_category << ", ";
+            std::cout << "type = " << def_type << ", ";
+            std::cout << "value = \"" << value_string << "\"" << std::endl;
+            NOMAD::Param user_param(param_name, value_string, def_type, def_category, false);
+            this->add(user_param);
         }
         
     }
