@@ -22,7 +22,12 @@
     explicit Uncopyable  ( void ) {}
 
     /// Destructor.
-    virtual ~Uncopyable ( void ) {}
+    // VRM Although Uncopyable is a base class, it is not polymorphic:
+    // its derived class types are not manipulated through Uncopyable's
+    // interface, they are manipulated directly.
+    // For this reason, we do not need to make the destructor virtual.
+    // See Effective C++ Item 7.
+    ~Uncopyable ( void ) {}
 
   private:
 

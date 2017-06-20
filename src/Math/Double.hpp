@@ -91,7 +91,7 @@
         Double ( const Double & d );
         
         /// Destructor.
-        virtual ~Double ( void );
+        ~Double ( void );
         
         /// Function \c atof (conversion from a string to a real).
         /**

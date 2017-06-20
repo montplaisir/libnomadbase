@@ -36,7 +36,10 @@ public:
     LHS(const LHS& lhs);
 
     // Destructor
-    virtual ~LHS(void); 
+    // VRM if this class becomes a base class, then the destructor
+    // needs to be virtual. But this is not the case currently.
+    // See Effective C++ Item 7.
+    ~LHS(void); 
 
     // Get/Set seed for random generation
     int     get_seed(void) const     { return _seed; }

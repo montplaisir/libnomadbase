@@ -66,7 +66,7 @@
         const Point & operator = ( const Point & p );
 
         /// Destructor.
-        virtual ~Point ( void );
+        ~Point ( void );
 
         /*---------*/
         /* Get/Set */
@@ -113,7 +113,7 @@
          \param p The right-hand side object -- \b IN.
          \return A boolean equal to \c true if  \c *this \c < \c p.
          */
-        virtual bool operator <  ( const Point & p ) const;
+        bool operator <  ( const Point & p ) const;
 
         /*---------*/
         /* Display */
@@ -128,7 +128,7 @@
          \param lim Max number of coordinates to display -- \b IN
          -- \b optional (default = -1, no limit).
          */
-        virtual void display ( std::ostream& out,
+        void display ( std::ostream& out,
                                       const std::string    & sep = " " ,
                                       int                    w   = -1  ,
                                       int                    lim = -1    ) const;
@@ -141,7 +141,7 @@
         /**
          \return Size of the point in memory, in bytes.
          */
-        virtual int mem_sizeof ( void ) const
+        int mem_sizeof ( void ) const
         {
             return std::accumulate ( _coords,
                                     _coords+_n,

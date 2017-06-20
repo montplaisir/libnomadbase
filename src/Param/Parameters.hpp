@@ -20,7 +20,7 @@ private:
     void debug_display() const;
 public:
     explicit Parameters();
-    virtual ~Parameters() {}
+    ~Parameters() {}
 
     // Add a Param to the list.
     // True if param was correctly added.

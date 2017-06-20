@@ -64,7 +64,7 @@
         const Vector & operator = ( const Vector & v );
 
         /// Destructor.
-        virtual ~Vector ( void );
+        ~Vector ( void );
 
         /*---------*/
         /* Get/Set */

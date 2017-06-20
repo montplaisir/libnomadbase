@@ -40,7 +40,7 @@ public:
           bool value_is_const = false);
 
     // Destructor
-    virtual ~Param() {}
+    ~Param() {}
 
     // Get/Set
 
