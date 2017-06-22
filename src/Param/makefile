@@ -1,5 +1,7 @@
 UNAME := $(shell uname)
+ifndef VARIANT
 VARIANT             = release
+endif
 
 ifndef TOP
 $(error TOP needs to be defined)

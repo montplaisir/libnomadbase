@@ -2,7 +2,7 @@
 ifndef TOP
 $(error TOP needs to be defined)
 endif
-ifndef ($(VARIANT))
+ifndef VARIANT
 VARIANT             = release
 endif
 ifndef BUILD_DIR
